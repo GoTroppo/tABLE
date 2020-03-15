@@ -9,15 +9,16 @@ import neopixel
 pixel_pin = board.D18
 
 # The number of NeoPixels
-num_pixels = 30
+num_pixels = 24
 
 # The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
 # For RGBW NeoPixels, simply change the ORDER to RGBW or GRBW.
+
+# Order is reversed for Duinotech RGB LED Ring so use GRB
 ORDER = neopixel.GRB
 
-pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.2, auto_write=False,
+pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.1, auto_write=False,
                            pixel_order=ORDER)
-
 
 def wheel(pos):
     # Input a value 0 to 255 to get a color value.
@@ -49,27 +50,30 @@ def rainbow_cycle(wait):
         pixels.show()
         time.sleep(wait)
 
+try:
+    while True:
+        # Comment this line out if you have RGBW/GRBW NeoPixels
+	# Colour ring as Red first
+        pixels.fill((255, 0, 0))
+        pixels.show()
+        time.sleep(0.7)
 
-while True:
-    # Comment this line out if you have RGBW/GRBW NeoPixels
-    pixels.fill((255, 0, 0))
-    # Uncomment this line if you have RGBW/GRBW NeoPixels
-    # pixels.fill((255, 0, 0, 0))
+        # Comment this line out if you have RGBW/GRBW NeoPixels
+	# Colour ring as Green next
+        pixels.fill((0, 255, 0))
+        pixels.show()
+        time.sleep(0.7)
+
+        # Comment this line out if you have RGBW/GRBW NeoPixels
+	# Colour ring as Blue next
+        pixels.fill((0, 0, 255))
+        pixels.show()
+        time.sleep(0.7)
+
+	#Then let's make a pretty rainbow of colours!
+        rainbow_cycle(0.0051)    # rainbow cycle with 1ms delay per step
+
+# When ^C is used put colours back to none
+except KeyboardInterrupt:
+    pixels.fill((0, 0, 0))
     pixels.show()
-    time.sleep(1)
-
-    # Comment this line out if you have RGBW/GRBW NeoPixels
-    pixels.fill((0, 255, 0))
-    # Uncomment this line if you have RGBW/GRBW NeoPixels
-    # pixels.fill((0, 255, 0, 0))
-    pixels.show()
-    time.sleep(1)
-
-    # Comment this line out if you have RGBW/GRBW NeoPixels
-    pixels.fill((0, 0, 255))
-    # Uncomment this line if you have RGBW/GRBW NeoPixels
-    # pixels.fill((0, 0, 255, 0))
-    pixels.show()
-    time.sleep(1)
-
-    rainbow_cycle(0.001)    # rainbow cycle with 1ms delay per step
