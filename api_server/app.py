@@ -4,7 +4,7 @@ from flask import Flask, jsonify, abort, make_response
 from flask import request
 
 import time
-#import board
+import board
 import neopixel
 from rpi_ws281x import *
 
@@ -13,9 +13,7 @@ PIXEL_COUNT = 24      # Number of LED pixels.
 
 # Choose an open pin connected to the Data In of the NeoPixel strip, i.e. board.D18
 # NeoPixels must be connected to D10, D12, D18 or D21 to work.
-#PIXEL_PIN = board.D18      # GPIO pin connected to the pixels (must support PWM!).
-# Needed to change the 
-PIXEL_PIN = 18      # GPIO pin connected to the pixels (must support PWM!).
+PIXEL_PIN = board.D18      # GPIO pin connected to the pixels (must support PWM!).
 
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10       # DMA channel to use for generating signal (try 10)
@@ -35,9 +33,12 @@ NUM_PIXELS = 24
 ORDER = neopixel.GRB
 
 # Create NeoPixel object with appropriate configuration.
-pixel_strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+pixel_strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL_PIN.id, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
 pixel_strip.begin()
 
+# Set specific pixel to colour
+# pixel_colour is a hexadecimal number
+# set_single is a boolean flag to either leave existing pixels showing or only show selected pixel
 def set_pixel(pixel_index: int, pixel_colour: str, set_single: bool = True):
     if set_single == 1 :
         # Clear all pixels
@@ -48,11 +49,13 @@ def set_pixel(pixel_index: int, pixel_colour: str, set_single: bool = True):
 
     pixel_strip.show()
 
+# set all pixels to blank
 def blank_neopixel():
     for i in range(0, pixel_strip.numPixels(), 1):
         pixel_strip.setPixelColor(i, Color(0, 0, 0))
     pixel_strip.show()
 
+# Rainbow of colours
 def wheel(pos):
     """Generate rainbow colors across 0-255 positions."""
     if pos < 85:
@@ -64,24 +67,24 @@ def wheel(pos):
         pos -= 170
         return Color(0, pos * 3, 255 - pos * 3)
 
+#Draw rainbow that fades across all pixels at once.
 def rainbow(strip, wait_ms=20, iterations=1):
-    """Draw rainbow that fades across all pixels at once."""
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((i+j) & 255))
         strip.show()
         time.sleep(wait_ms/1000.0)
 
+#Draw rainbow that uniformly distributes itself across all pixels.
 def rainbowCycle(strip, wait_ms=20, iterations=5):
-    """Draw rainbow that uniformly distributes itself across all pixels."""
     for j in range(256*iterations):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels()) + j) & 255))
         strip.show()
         time.sleep(wait_ms/1000.0)
 
+#Rainbow movie theater light style chaser animation.
 def theaterChaseRainbow(strip, wait_ms=50, chase_range=256):
-    """Rainbow movie theater light style chaser animation."""
     for j in range(chase_range):
         for q in range(3):
             for i in range(0, strip.numPixels(), 3):
@@ -91,14 +94,15 @@ def theaterChaseRainbow(strip, wait_ms=50, chase_range=256):
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i+q, 0)
 
+#Return (red, green, blue) for the color given as hex form for rrggbb.
 def hex_to_rgb(value):
-    """Return (red, green, blue) for the color given as hex form for rrggbb."""
     lv = len(value)
     return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
 
-
+##### Start main app #####
 app = Flask(__name__)
 
+## Define API routes
 @app.route('/rainbow_cycle', methods=['GET'])
 def do_rainbow_cycle():
     rainbowCycle(pixel_strip,20,1)
@@ -119,12 +123,14 @@ def do_rainbow():
     blank_neopixel()
     return jsonify({'rainbow': True})
 
+# Set the brightness for all pixels
 @app.route('/brightness/<int:brightness>', methods=['GET'])
 def set_pixel_strip_brightness(brightness):
     pixel_strip.setBrightness(brightness)
     pixel_strip.show()
     return jsonify({'brightness': brightness})
 
+# set all pixels to blank
 @app.route('/clear', methods=['GET'])
 def clear_neopixel():
     blank_neopixel()
