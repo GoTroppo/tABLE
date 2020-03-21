@@ -26,6 +26,12 @@ curl -si localhost:5000/rainbow
 curl -si localhost:5000/rainbow_cycle
 ```
 
+###### Make a rainbow chase
+
+```
+curl -si localhost:5000/rainbow_chase
+```
+
 ###### Set pixel LED 9 to Red colour and blank all other pixels
 
 ```
@@ -38,3 +44,8 @@ curl -si localhost:5000/pixel/9/FF0000/1
 curl -si localhost:5000/pixel/23/00FF00/0
 ```
 
+###### Set all pixel LEDs to blank
+
+```
+curl -si localhost:5000/clear
+```
