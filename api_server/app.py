@@ -1,13 +1,15 @@
+# Server for accecpting requests for NeoPixels on Raspberry Pi
+
 from flask import Flask, jsonify, abort, make_response
 from flask import request
 
-# Simple test for NeoPixels on Raspberry Pi
 import time
 import board
 import neopixel
 
 flask_port=5000
-
+init_brightness = 0.2
+#full_brightness_perc = 0.5
 
 # Choose an open pin connected to the Data In of the NeoPixel strip, i.e. board.D18
 # NeoPixels must be connected to D10, D12, D18 or D21 to work.
@@ -22,8 +24,16 @@ num_pixels = 24
 # Order is reversed for Duinotech RGB LED Ring so use GRB
 ORDER = neopixel.GRB
 
-pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=0.1, auto_write=False,
+pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=init_brightness, auto_write=False,
                            pixel_order=ORDER)
+
+def set_pixel(pixel_index: int, pixel_colour: str, set_single: bool = True):
+    if set_single == 1 :
+        # Clear all pixels
+        pixels.fill((0, 0, 0))
+
+    pixels[pixel_index] = hex_to_rgb(pixel_colour)
+    pixels.show()
 
 def blank_neopixel():
     pixels.fill((0, 0, 0))
@@ -58,57 +68,36 @@ def rainbow_cycle(wait):
         pixels.show()
         time.sleep(wait)
 
+
+def hex_to_rgb(value):
+    """Return (red, green, blue) for the color given as hex form for rrggbb."""
+    #value = value.lstrip('#')
+    lv = len(value)
+    return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
+
+
 app = Flask(__name__)
 
-tasks = [
-    {
-        'id': 1,
-        'title': u'Buy groceries',
-        'description': u'Milk, Cheese, Pizza, Fruit, Tylenol', 
-        'done': False
-    },
-    {
-        'id': 2,
-        'title': u'Learn Python',
-        'description': u'Need to find a good Python tutorial on the web', 
-        'done': False
-    }
-]
-
-@app.route('/todo/api/v1.0/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': tasks})
-
-@app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['GET'])
-def get_task(task_id):
-    task = [task for task in tasks if task['id'] == task_id]
-    if len(task) == 0:
-        abort(404)
-    return jsonify({'task': task[0]})
-
-@app.route('/todo/api/v1.0/tasks', methods=['POST'])
-def create_task():
-    if not request.json or not 'title' in request.json:
-        abort(400)
-    task = {
-        'id': tasks[-1]['id'] + 1,
-        'title': request.json['title'],
-        'description': request.json.get('description', ""),
-        'done': False
-    }
-    tasks.append(task)
-    return jsonify({'task': task}), 201
-
-@app.route('/api/v1.0/rainbow', methods=['GET'])
+@app.route('/rainbow', methods=['GET'])
 def rainbow():
     rainbow_cycle(0.0051)
     time.sleep(1.0)
     blank_neopixel()
     return jsonify({'rainbow': 'Pretty'})
 
+@app.route('/pixel/<int:pixel_index>/<string:pixel_colour>', methods=['GET'])
+def set_single_pixel(pixel_index,pixel_colour):
+    set_pixel(pixel_index,pixel_colour)
+    return jsonify({'pixel': {'set' : pixel_index}})
+
+@app.route('/pixel/<int:pixel_index>/<string:pixel_colour>/<int:single_only>', methods=['GET'])
+def set_one_or_more_pixel(pixel_index,pixel_colour,single_only):
+    set_pixel(pixel_index,pixel_colour,single_only)
+    return jsonify({'pixel': {'set' : pixel_index, 'single_only' :single_only }})
+
 @app.route('/')
 def index():
-    return 'Hello world'
+    return 'Come on in and sit round the tAble!'
 
 @app.errorhandler(404)
 def not_found(error):
