@@ -68,13 +68,32 @@ class Neopixel:
             return Color(0, pos * 3, 255 - pos * 3)
 
     #Draw rainbow that fades across all pixels at once.
-    def rainbow(self,wait_ms=20, iterations=1):
+    def rainbow(self,num_pixels=None,wait_ms=20,iterations=1):
+        if(num_pixels is None):
+            num_pixels=self.pixel_strip.numPixels()
         for j in range(256*iterations):
-            for i in range(self.pixel_strip.numPixels()):
+            for i in range(num_pixels):
                 self.pixel_strip.setPixelColor(i, self.wheel((i+j) & 255))
             self.pixel_strip.show()
             time.sleep(wait_ms/1000.0)
 
+    #Draw rainbow that fades across all pixels at once.
+    def rainbow_meter(self,num_pixels=None,blank_pixels=False,wait_ms=20):
+        if(num_pixels is None):
+            num_pixels=self.pixel_strip.numPixels()
+
+        if(blank_pixels):
+            for i in range(num_pixels,-1,-1):
+                self.pixel_strip.setPixelColor(i, 0)
+                self.pixel_strip.show()
+                time.sleep(wait_ms/1000.0)                
+        else:
+            #self.blank_neopixel()
+            for i in range(num_pixels):
+                self.pixel_strip.setPixelColor(i, self.wheel(i & 255))
+                self.pixel_strip.show()
+                time.sleep(wait_ms/1000.0)
+            
     #Draw rainbow that uniformly distributes itself across all pixels.
     def rainbowCycle(self,wait_ms=20, iterations=5):
         for j in range(256*iterations):

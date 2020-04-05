@@ -45,6 +45,18 @@ def create_app():
         neopixel_controller.do_rainbow()
         return jsonify({'rainbow': True})
 
+    # Rainbow meter
+    @app.route('/rainbow_meter', methods=['GET'])
+    def do_rainbow_meter():
+        neopixel_controller.do_rainbow_meter()
+        return jsonify({'rainbow_meter': True})
+
+    # Blank the Rainbow meter
+    @app.route('/rainbow_meter_blank', methods=['GET'])
+    def do_rainbow_meter_blank():
+        neopixel_controller.do_rainbow_meter_blank()
+        return jsonify({'rainbow_meter': True})
+
     # Set the brightness for all pixels
     @app.route('/brightness/<int:brightness>', methods=['GET'])
     def set_pixel_strip_brightness(brightness):

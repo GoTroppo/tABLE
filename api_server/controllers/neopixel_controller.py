@@ -1,4 +1,4 @@
-from models.Devices.table_neopixel import Neopixel
+from models.Devices.neopixel import Neopixel
 import time
 
 class NeopixelController:
@@ -22,6 +22,14 @@ class NeopixelController:
         self.neopixel.blank_neopixel()
         return True
 
+    def do_rainbow_meter(self):
+        self.neopixel.rainbow_meter(10)
+        return True
+
+    def do_rainbow_meter_blank(self):
+        self.neopixel.rainbow_meter(10,True)
+        return True
+        
     def set_pixel_strip_brightness(self,brightness):
         self.neopixel.pixel_strip.setBrightness(brightness)
         self.neopixel.pixel_strip.show()

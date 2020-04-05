@@ -18,6 +18,7 @@ class xc3738_sensor(Thread):
   neopixel_controller = NeopixelController()
 
   is_monitor_running = False
+  is_neopixel_enabled = True
 
   def __init__(self, sleep=0.05,max_volt=3.3,multiplier=100):
     print("**** Created  xc3738_sensor ****")
@@ -54,7 +55,6 @@ class xc3738_sensor(Thread):
 
 
   def run(self):
-  #def run_monitor(self):
     try:
       print("**** Started Pressure Sensor Monitor ****")
 
@@ -66,17 +66,20 @@ class xc3738_sensor(Thread):
         press_volts = self.ConvertVolts(press_output)
         press_level = self.ConvertPressure(press_output)
  
-        if (self.DEBUG_MODE):
+        if(self.DEBUG_MODE):
           self.is_debug_message_printed = False
           print("Pressure : {} ({}V) {} bits".format(press_level,press_volts,press_output))
-          if(press_output > 100):
-            self.neopixel_controller.set_one_or_more_pixel(10,"FF0000",False)
-          else:
-            self.neopixel_controller.neopixel.blank_neopixel()
-
         elif(not self.is_debug_message_printed and not self.DEBUG_MODE):
           self.is_debug_message_printed = True
           print("****** Debug Off *****")
+
+        if (self.is_neopixel_enabled):
+          if(press_output > 100):
+            num_pixels=round(press_output/100)
+            self.neopixel_controller.neopixel.rainbow_meter(num_pixels)
+#            self.neopixel_controller.neopixel.rainbow_meter(num_pixels,True)
+          else:
+            self.neopixel_controller.neopixel.blank_neopixel()
 
         sleep(self.TIME_TO_SLEEP)
 
