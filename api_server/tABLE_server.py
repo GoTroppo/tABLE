@@ -6,31 +6,34 @@ import atexit
 from models.Sensors.pressure_sensor_xc3738 import xc3738_sensor
 from controllers.neopixel_controller import NeopixelController
 
+ENABLE_PRESSURE_SENSOR=False
 POOL_TIME = 5 #Seconds
 
 # variables that are accessible from anywhere
-commonDataStruct = {}
+commonDataStruct = "{'a','b'}"
 # lock to control access to variable
 dataLock = threading.Lock()
 # thread handler
-yourThread = threading.Thread()
-
+yourThread = None
+pressure_sensor_controller=None
 
 def create_app():
+    global pressure_sensor_controller,ENABLE_PRESSURE_SENSOR
+
     app = Flask(__name__)
-    press_sensor = xc3738_sensor()
+    pressure_sensor_controller = None
+    pressure_sensor_controller = xc3738_sensor() if ENABLE_PRESSURE_SENSOR else None 
     neopixel_controller = NeopixelController()
 
     @app.route('/')
     def index():
-        return 'Come on in and sit round the tAble!'
+        return 'Come on in and sit round the tABLE!'
 
-    ## Define API routes
+    ## Handle Neopixel requests
     @app.route('/rainbow_cycle', methods=['GET'])
     def do_rainbow_cycle():
         neopixel_controller.do_rainbow_cycle()
         return jsonify({'rainbow_cycle': True})
-
 
     @app.route('/rainbow_chase', methods=['GET'])
     def do_rainbow_chase():
@@ -66,41 +69,50 @@ def create_app():
 
     @app.route('/debug_on')
     def set_debug_on():
-        press_sensor.DEBUG_MODE=True
+        if (pressure_sensor_controller is not None):
+            pressure_sensor_controller.DEBUG_MODE=True
         return 'DEBUG MODE ON'
 
     @app.route('/debug_off')
     def set_debug_off():
-        press_sensor.DEBUG_MODE=False
+        if (pressure_sensor_controller is not None):
+            pressure_sensor_controller.DEBUG_MODE=False
         return 'DEBUG MODE OFF'
+
+    ##### This needs work!
+    """
+    @app.route('/enable_pressure_sensor')
+    def set_pressure_sensor_on():
+        global pressure_sensor_controller
+        msg = 'Pressure Sensor enabled'
+        if (pressure_sensor_controller is not None):
+            pressure_sensor_controller=xc3738_sensor()
+            startSensorMonitors()
+        else:
+            msg="Pressure Sensor all ready enabled!"
+        return msg
+    """
 
     def interrupt():
         global yourThread
-        yourThread.cancel()
+        if (yourThread is not None):
+            yourThread.cancel()
 
-    def doStuff():
-        global commonDataStruct
-        global yourThread
-        with dataLock:
-        # Do your stuff with commonDataStruct Here
-          #print("commonDataStruct")
-          press_sensor.run_monitor()
-
-        # Set the next thread to happen
-        #yourThread = threading.Timer(POOL_TIME, doStuff, ())
-        #yourThread.start()   
-
-    def doStuffStart():
+    def startSensorMonitors():
         # Do initialisation stuff here
-        global yourThread
+        #global yourThread
         # Create your thread
-        yourThread = threading.Timer(POOL_TIME, doStuff, ())
-        yourThread.start()
+        print("startSensorMonitors")
+        if (pressure_sensor_controller is not None):
+            pressure_sensor_controller.start()
 
     # Initiate
-    doStuffStart()
-    # When you kill Flask (SIGTERM), clear the trigger for the next thread
-    atexit.register(interrupt)
+    if(ENABLE_PRESSURE_SENSOR):
+        startSensorMonitors()
+        
+        # When you kill Flask (SIGTERM), clear the trigger for the next thread
+        atexit.register(interrupt)
+
     return app
 
 app = create_app()          

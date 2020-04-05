@@ -1,11 +1,13 @@
 # Importing modules
 import spidev # To communicate with SPI devices
 from time import sleep  # To add delay
+from threading import Thread
+import logging
+from controllers.neopixel_controller import NeopixelController
 
-
-class xc3738_sensor:
-
+class xc3738_sensor(Thread):
   DEBUG_MODE=False
+  stop_monitor=False
   is_debug_message_printed = False
 
   TIME_TO_SLEEP = 0.05
@@ -13,8 +15,14 @@ class xc3738_sensor:
   MULTIPLIER = 100
   spi = spidev.SpiDev() # Created an object
 
+  neopixel_controller = NeopixelController()
+
+  is_monitor_running = False
+
   def __init__(self, sleep=0.05,max_volt=3.3,multiplier=100):
-    print("**** Started Pressure Sensor Monitor ****")
+    print("**** Created  xc3738_sensor ****")
+    # Call the Thread class's init function
+    Thread.__init__(self)
 
     # Start SPI connection
     self.spi.open(0,0) 
@@ -42,9 +50,18 @@ class xc3738_sensor:
     press = round(press)
     return press
 
-  def run_monitor(self):
+ # def lightUpPixels(reading):
+
+
+  def run(self):
+  #def run_monitor(self):
     try:
+      print("**** Started Pressure Sensor Monitor ****")
+
       while True:
+        if (self.stop_monitor):
+          break
+        is_monitor_running=True
         press_output = self.analogInput(0) # Reading from CH0
         press_volts = self.ConvertVolts(press_output)
         press_level = self.ConvertPressure(press_output)
@@ -52,6 +69,11 @@ class xc3738_sensor:
         if (self.DEBUG_MODE):
           self.is_debug_message_printed = False
           print("Pressure : {} ({}V) {} bits".format(press_level,press_volts,press_output))
+          if(press_output > 100):
+            self.neopixel_controller.set_one_or_more_pixel(10,"FF0000",False)
+          else:
+            self.neopixel_controller.neopixel.blank_neopixel()
+
         elif(not self.is_debug_message_printed and not self.DEBUG_MODE):
           self.is_debug_message_printed = True
           print("****** Debug Off *****")
@@ -60,4 +82,5 @@ class xc3738_sensor:
 
     # When ^C is used put colours back to none
     except KeyboardInterrupt:
+      is_monitor_running=False
       print("No more pressure !!!!!")
