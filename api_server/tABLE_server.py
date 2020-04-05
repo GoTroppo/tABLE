@@ -1,13 +1,10 @@
-#import sys
-#sys.path.append('./Devices')
-#sys.path.append('./Sensors/')
-
 import time
 from flask import Flask, jsonify, abort, make_response
 import threading
 import atexit
+
 from models.Sensors.pressure_sensor_xc3738 import xc3738_sensor
-from models.Devices.table_neopixel import Neopixel
+from controllers.neopixel_controller import NeopixelController
 
 POOL_TIME = 5 #Seconds
 
@@ -22,8 +19,7 @@ yourThread = threading.Thread()
 def create_app():
     app = Flask(__name__)
     press_sensor = xc3738_sensor()
-    neopixel = Neopixel()
-#    pressure_sensor_controller = 
+    neopixel_controller = NeopixelController()
 
     @app.route('/')
     def index():
@@ -32,45 +28,40 @@ def create_app():
     ## Define API routes
     @app.route('/rainbow_cycle', methods=['GET'])
     def do_rainbow_cycle():
-        neopixel.rainbowCycle(20,1)
-        time.sleep(1.0)
-        neopixel.blank_neopixel()
+        neopixel_controller.do_rainbow_cycle()
         return jsonify({'rainbow_cycle': True})
+
 
     @app.route('/rainbow_chase', methods=['GET'])
     def do_rainbow_chase():
-        neopixel.theaterChaseRainbow(20,256)
-        time.sleep(1.0)
-        neopixel.blank_neopixel()
+        neopixel_controller.do_rainbow_chase()
         return jsonify({'rainbow_chase': True})
 
     @app.route('/rainbow', methods=['GET'])
     def do_rainbow():
-        neopixel.rainbow()
-        neopixel.blank_neopixel()
+        neopixel_controller.do_rainbow()
         return jsonify({'rainbow': True})
 
     # Set the brightness for all pixels
     @app.route('/brightness/<int:brightness>', methods=['GET'])
     def set_pixel_strip_brightness(brightness):
-        neopixel.pixel_strip.setBrightness(brightness)
-        neopixel.pixel_strip.show()
+        neopixel_controller.set_pixel_strip_brightness(brightness)
         return jsonify({'brightness': brightness})
 
     # set all pixels to blank
     @app.route('/clear', methods=['GET'])
     def clear_neopixel():
-        neopixel.blank_neopixel()
+        neopixel_controller.clear_neopixel()
         return jsonify({'clear': True})
 
     @app.route('/pixel/<int:pixel_index>/<string:pixel_colour>', methods=['GET'])
     def set_single_pixel(pixel_index,pixel_colour):
-        neopixel.set_pixel(pixel_index,pixel_colour)
+        neopixel_controller.set_single_pixel(pixel_index,pixel_colour)
         return jsonify({'pixel': {'set' : pixel_index}})
 
     @app.route('/pixel/<int:pixel_index>/<string:pixel_colour>/<int:single_only>', methods=['GET'])
     def set_one_or_more_pixel(pixel_index,pixel_colour,single_only):
-        neopixel.set_pixel(pixel_index,pixel_colour,single_only)
+        neopixel_controller.set_one_or_more_pixel(pixel_index,pixel_colour,single_only)
         return jsonify({'pixel': {'set' : pixel_index, 'single_only' :single_only }})
 
     @app.route('/debug_on')
