@@ -6,6 +6,7 @@ from time import sleep  # To add delay
 class xc3738_sensor:
 
   DEBUG_MODE=False
+  is_debug_message_printed = False
 
   TIME_TO_SLEEP = 0.05
   MAX_INPUT_VOLTS = 3.3
@@ -49,7 +50,11 @@ class xc3738_sensor:
         press_level = self.ConvertPressure(press_output)
  
         if (self.DEBUG_MODE):
+          self.is_debug_message_printed = False
           print("Pressure : {} ({}V) {} bits".format(press_level,press_volts,press_output))
+        elif(not self.is_debug_message_printed and not self.DEBUG_MODE):
+          self.is_debug_message_printed = True
+          print("****** Debug Off *****")
 
         sleep(self.TIME_TO_SLEEP)
 

@@ -1,13 +1,13 @@
-import sys
-sys.path.append('./Devices')
-sys.path.append('./Sensors/')
+#import sys
+#sys.path.append('./Devices')
+#sys.path.append('./Sensors/')
 
 import time
 from flask import Flask, jsonify, abort, make_response
 import threading
 import atexit
-from pressure_sensor_xc3738 import xc3738_sensor
-from table_neopixel import Neopixel
+from models.Sensors.pressure_sensor_xc3738 import xc3738_sensor
+from models.Devices.table_neopixel import Neopixel
 
 POOL_TIME = 5 #Seconds
 
@@ -23,6 +23,7 @@ def create_app():
     app = Flask(__name__)
     press_sensor = xc3738_sensor()
     neopixel = Neopixel()
+#    pressure_sensor_controller = 
 
     @app.route('/')
     def index():
