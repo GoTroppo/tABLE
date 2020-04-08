@@ -1,0 +1,4 @@
+*.pyc
+__pycache__
+api_server/app.pid
+api_server/.env
