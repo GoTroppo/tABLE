@@ -5,7 +5,7 @@ import atexit
 import os
 from dotenv import load_dotenv,find_dotenv
 
-from models.sensors.pressure_sensor_xc3738 import xc3738_sensor
+from models.sensors.pressure_sensor_xc3738 import Xc3738Sensor
 from controllers.neopixel_controller import NeopixelController
 from controllers.mcp3008_controller import Mcp3008Controller
 
@@ -25,7 +25,7 @@ yourThread = None
 # Define the devices and sensors being used
 neopixel_controller = NeopixelController()
 mcp3008_controller = Mcp3008Controller()
-pressure_sensor_controller = xc3738_sensor(mcp3008_controller) if ENABLE_PRESSURE_SENSOR else None 
+pressure_sensor_controller = Xc3738Sensor(mcp3008_controller) if ENABLE_PRESSURE_SENSOR else None 
 
 app = Flask(__name__)
 
