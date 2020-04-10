@@ -3,16 +3,15 @@
 # which is connected to an MCP3008 analog A/D Converter
 ############
 
-
-
 # Importing modules
-import spidev # To communicate with SPI devices
+#import spidev # To communicate with SPI devices
 from time import sleep  # To add delay
 from threading import Thread
 import logging
 from controllers.neopixel_controller import NeopixelController
+from controllers.mcp3008_controller import Mcp3008Controller
 
-#Define Default Values
+###### Define Default Values
 
 # This is the analog channel input number for MCP3008
 MCP3008_CHANNEL=0
@@ -27,32 +26,22 @@ class xc3738_sensor(Thread):
   stop_monitor=False
   is_debug_message_printed = False
 
-
-  spi = spidev.SpiDev() # Created an object
-
+  #spi = spidev.SpiDev() # Created an object
+  mcp3008_controller=None
   neopixel_controller = NeopixelController()
 
   is_monitor_running = False
   is_neopixel_enabled = True
 
-  def __init__(self, sleep=0.05,max_volt=3.3,multiplier=100):
+  def __init__(self, mcp3008_controller_obj, sleep=0.05,max_volt=3.3,multiplier=100):
     print("**** Created  xc3738_sensor ****")
     # Call the Thread class's init function
     Thread.__init__(self)
+    self.mcp3008_controller = mcp3008_controller_obj
 
-    # Start SPI connection
-    self.spi.open(0,0) 
     self.TIME_TO_SLEEP = sleep
     self.MAX_INPUT_VOLTS = max_volt
     self.MULTIPLIER = multiplier
-    
-
-  # Read MCP3008 data
-  def analogInput(self,channel):
-    self.spi.max_speed_hz = 1350000
-    adc = self.spi.xfer2([1,(8+channel)<<4,0])
-    data = ((adc[1]&3) << 8) + adc[2]
-    return data
 
   # Below function will convert data to voltage
   def ConvertVolts(self,data):
@@ -66,9 +55,6 @@ class xc3738_sensor(Thread):
     press = round(press)
     return press
 
- # def lightUpPixels(reading):
-
-
   def run(self):
     try:
       print("**** Started Pressure Sensor Monitor ****")
@@ -77,7 +63,7 @@ class xc3738_sensor(Thread):
         if (self.stop_monitor):
           break
         is_monitor_running=True
-        press_output = self.analogInput(MCP3008_CHANNEL) # Reading from CH0
+        press_output = self.mcp3008_controller.readAnalogInput(MCP3008_CHANNEL) # Reading from CH0
         press_volts = self.ConvertVolts(press_output)
         press_level = self.ConvertPressure(press_output)
  
