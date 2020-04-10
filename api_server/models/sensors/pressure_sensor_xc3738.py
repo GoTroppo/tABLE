@@ -4,10 +4,7 @@
 ############
 
 # Importing modules
-#import spidev # To communicate with SPI devices
 from time import sleep  # To add delay
-#from threading import Thread
-#import logging
 from models.sensors.sensor import Sensor
 from controllers.neopixel_controller import NeopixelController
 from controllers.mcp3008_controller import Mcp3008Controller
@@ -22,12 +19,11 @@ MAX_INPUT_VOLTS = 3.3
 MULTIPLIER = 100
 
 #### Define class ####
-class xc3738_sensor(Sensor):
+class Xc3738Sensor(Sensor):
   DEBUG_MODE=False
   stop_monitor=False
   is_debug_message_printed = False
 
-  #spi = spidev.SpiDev() # Created an object
   mcp3008_controller=None
   neopixel_controller = NeopixelController()
 
