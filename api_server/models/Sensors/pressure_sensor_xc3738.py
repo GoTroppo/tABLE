@@ -1,3 +1,10 @@
+############
+# This class reads analog input from a XC-3738 Pressure sensor
+# which is connected to an MCP3008 analog A/D Converter
+############
+
+
+
 # Importing modules
 import spidev # To communicate with SPI devices
 from time import sleep  # To add delay
@@ -5,14 +12,21 @@ from threading import Thread
 import logging
 from controllers.neopixel_controller import NeopixelController
 
+
+#Define Default Values 
+MCP3008_CHANNEL=0
+
+TIME_TO_SLEEP = 0.05
+MAX_INPUT_VOLTS = 3.3
+MULTIPLIER = 100
+
+#### Define class ####
 class xc3738_sensor(Thread):
   DEBUG_MODE=False
   stop_monitor=False
   is_debug_message_printed = False
 
-  TIME_TO_SLEEP = 0.05
-  MAX_INPUT_VOLTS = 3.3
-  MULTIPLIER = 100
+
   spi = spidev.SpiDev() # Created an object
 
   neopixel_controller = NeopixelController()
@@ -41,13 +55,13 @@ class xc3738_sensor(Thread):
 
   # Below function will convert data to voltage
   def ConvertVolts(self,data):
-    volts = (data * self.MAX_INPUT_VOLTS) / float(1023) # MCP3008 is 10bit (1024)
+    volts = (data * MAX_INPUT_VOLTS) / float(1023) # MCP3008 is 10bit (1024)
     volts = round(volts, 2) # Round off to 2 decimal places
     return volts
  
   # Below function will convert data to pressure.
   def ConvertPressure(self,data):
-    press = ((data * self.MAX_INPUT_VOLTS * self.MULTIPLIER)/float(1023))
+    press = ((data * MAX_INPUT_VOLTS * self.MULTIPLIER)/float(1023))
     press = round(press)
     return press
 
@@ -62,7 +76,7 @@ class xc3738_sensor(Thread):
         if (self.stop_monitor):
           break
         is_monitor_running=True
-        press_output = self.analogInput(0) # Reading from CH0
+        press_output = self.analogInput(MCP3008_CHANNEL) # Reading from CH0
         press_volts = self.ConvertVolts(press_output)
         press_level = self.ConvertPressure(press_output)
  
@@ -77,11 +91,10 @@ class xc3738_sensor(Thread):
           if(press_output > 100):
             num_pixels=round(press_output/100)
             self.neopixel_controller.neopixel.rainbow_meter(num_pixels)
-#            self.neopixel_controller.neopixel.rainbow_meter(num_pixels,True)
           else:
             self.neopixel_controller.neopixel.blank_neopixel()
 
-        sleep(self.TIME_TO_SLEEP)
+        sleep(TIME_TO_SLEEP)
 
     # When ^C is used put colours back to none
     except KeyboardInterrupt:
