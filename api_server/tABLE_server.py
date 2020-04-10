@@ -3,7 +3,7 @@ from flask import Flask, jsonify, abort, make_response
 import threading
 import atexit
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv,find_dotenv
 
 from models.Sensors.pressure_sensor_xc3738 import xc3738_sensor
 from controllers.neopixel_controller import NeopixelController
@@ -11,8 +11,7 @@ from controllers.neopixel_controller import NeopixelController
 # Check for a '.env' file to retrieve settings
 # eg "export ENABLE_PRESSURE_SENSOR=1"
 
-project_folder = os.path.dirname(__file__)
-load_dotenv(os.path.join(project_folder, '.env'))
+load_dotenv(find_dotenv())
 
 ENABLE_PRESSURE_SENSOR=True if (os.environ.get("ENABLE_PRESSURE_SENSOR") is not None and int(os.environ.get("ENABLE_PRESSURE_SENSOR")) > 0) else False
 #print("ENABLE_PRESSURE_SENSOR {}".format(ENABLE_PRESSURE_SENSOR))
