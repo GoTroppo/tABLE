@@ -5,7 +5,7 @@ import atexit
 import os
 from dotenv import load_dotenv,find_dotenv
 
-from models.Sensors.pressure_sensor_xc3738 import xc3738_sensor
+from models.sensors.pressure_sensor_xc3738 import xc3738_sensor
 from controllers.neopixel_controller import NeopixelController
 from controllers.mcp3008_controller import Mcp3008Controller
 

@@ -6,8 +6,9 @@
 # Importing modules
 #import spidev # To communicate with SPI devices
 from time import sleep  # To add delay
-from threading import Thread
-import logging
+#from threading import Thread
+#import logging
+from models.sensors.sensor import Sensor
 from controllers.neopixel_controller import NeopixelController
 from controllers.mcp3008_controller import Mcp3008Controller
 
@@ -21,7 +22,7 @@ MAX_INPUT_VOLTS = 3.3
 MULTIPLIER = 100
 
 #### Define class ####
-class xc3738_sensor(Thread):
+class xc3738_sensor(Sensor):
   DEBUG_MODE=False
   stop_monitor=False
   is_debug_message_printed = False
@@ -34,9 +35,8 @@ class xc3738_sensor(Thread):
   is_neopixel_enabled = True
 
   def __init__(self, mcp3008_controller_obj, sleep=0.05,max_volt=3.3,multiplier=100):
+    super(Sensor, self).__init__()
     print("**** Created  xc3738_sensor ****")
-    # Call the Thread class's init function
-    Thread.__init__(self)
     self.mcp3008_controller = mcp3008_controller_obj
 
     self.TIME_TO_SLEEP = sleep

@@ -1,4 +1,4 @@
-from models.Devices.neopixel import Neopixel
+from models.devices.neopixel import Neopixel
 import time
 
 class NeopixelController:
