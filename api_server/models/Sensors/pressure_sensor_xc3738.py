@@ -12,7 +12,6 @@ from threading import Thread
 import logging
 from controllers.neopixel_controller import NeopixelController
 
-
 #Define Default Values
 
 # This is the analog channel input number for MCP3008
