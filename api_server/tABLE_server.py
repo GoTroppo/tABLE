@@ -3,19 +3,17 @@ from flask import Flask, jsonify, abort, make_response
 import threading
 import atexit
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv,find_dotenv
 
-from models.Sensors.pressure_sensor_xc3738 import xc3738_sensor
+from models.sensors.pressure_sensor_xc3738 import xc3738_sensor
 from controllers.neopixel_controller import NeopixelController
+from controllers.mcp3008_controller import Mcp3008Controller
 
 # Check for a '.env' file to retrieve settings
 # eg "export ENABLE_PRESSURE_SENSOR=1"
-
-project_folder = os.path.dirname(__file__)
-load_dotenv(os.path.join(project_folder, '.env'))
+load_dotenv(find_dotenv())
 
 ENABLE_PRESSURE_SENSOR=True if (os.environ.get("ENABLE_PRESSURE_SENSOR") is not None and int(os.environ.get("ENABLE_PRESSURE_SENSOR")) > 0) else False
-#print("ENABLE_PRESSURE_SENSOR {}".format(ENABLE_PRESSURE_SENSOR))
 
 POOL_TIME = 5 #Seconds
 
@@ -24,9 +22,11 @@ dataLock = threading.Lock()
 # thread handler
 yourThread = None
 
-pressure_sensor_controller = None
-pressure_sensor_controller = xc3738_sensor() if ENABLE_PRESSURE_SENSOR else None 
+# Define the devices and sensors being used
 neopixel_controller = NeopixelController()
+mcp3008_controller = Mcp3008Controller()
+pressure_sensor_controller = xc3738_sensor(mcp3008_controller) if ENABLE_PRESSURE_SENSOR else None 
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -115,8 +115,6 @@ def interrupt():
         yourThread.cancel()
 
 def startSensorMonitors():
-    # Do initialisation stuff here
-    #global yourThread
     # Create your thread
     print("startSensorMonitors")
     if (pressure_sensor_controller is not None):
@@ -130,4 +128,4 @@ if(ENABLE_PRESSURE_SENSOR):
     atexit.register(interrupt)          
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='127.0.0.1')
