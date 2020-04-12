@@ -10,12 +10,11 @@ try:
 except ImportError:
     from yaml import Loader
 
-from controllers.neopixel_controller import NeopixelController
-from controllers.mcp3008_controller import Mcp3008Controller
+from controllers.neopixel.neopixel_controller import NeopixelController
+from controllers.mcp3008.mcp3008_controller import Mcp3008Controller
 from models.devices.neopixel import Neopixel
 from models.sensors.xc3738_pressure_sensor import Xc3738Sensor
 from models.sensors.xc4438_microphone_sound import Xc4438Sensor
-
 
 # Check for a '.env' file to retrieve settings
 # eg "export ENABLE_PRESSURE_SENSOR=1"
@@ -92,22 +91,46 @@ def set_one_or_more_pixel(pixel_index,pixel_colour,single_only):
   current_neopixel_controller.set_one_or_more_pixel(pixel_index,pixel_colour,single_only)
   return jsonify({'pixel': {'set' : pixel_index, 'single_only' :single_only }})
 
-@app.route('/debug_on')
-def set_debug_on():
+@app.route('/debug_on/<string:device_name>/<int:id>')
+def set_debug_on(device_name,id):
+  if(device_name == 'mcp3008_input'):
+    for controller in controllers:
+      #print("Controller Type: ", type(controller))
+      if(isinstance(controller, Mcp3008Controller)):
+      #  print("AnalogInputs :" ,controller.getAttachedAnalogInputsList())
+        for analog_input in controller.getAttachedAnalogInputsList():
+          print("Analog Input Type: ", type(analog_input))
+          if (analog_input is not None and analog_input.channel_id == id):
+            analog_input.DEBUG_MODE=True
+
+
+  '''  
   if (pressure_sensor_controller is not None):
       pressure_sensor_controller.DEBUG_MODE=False
   if (microphone_sensor_controller is not None):
       microphone_sensor_controller.DEBUG_MODE=True
-                
+  '''
+
   return 'DEBUG MODE ON'
 
-@app.route('/debug_off')
-def set_debug_off():
+@app.route('/debug_off/<string:device_name>/<int:id>')
+def set_debug_off(device_name,id):
+  if(device_name == 'mcp3008_input'):
+    for controller in controllers:
+      #print("Controller Type: ", type(controller))
+      if(isinstance(controller, Mcp3008Controller)):
+      #  print("AnalogInputs :" ,controller.getAttachedAnalogInputsList())
+        for analog_input in controller.getAttachedAnalogInputsList():
+          print("Analog Input Type: ", type(analog_input))
+          if (analog_input is not None and analog_input.channel_id == id):
+            analog_input.DEBUG_MODE=False
+  '''
   if (pressure_sensor_controller is not None):
       pressure_sensor_controller.DEBUG_MODE=False
   if (microphone_sensor_controller is not None):
       microphone_sensor_controller.DEBUG_MODE=False
-    
+  '''
+
   return 'DEBUG MODE OFF'
 
 
@@ -138,10 +161,11 @@ def startSensorMonitors():
   for controller in controllers:
     print("Controller Type: ", type(controller))
     if(isinstance(controller, Mcp3008Controller)):
-      for sensor in controller.getSensorList():
-        print("Sensor Type: ", type(sensor))
-        if (sensor is not None):
-            sensor.start()
+    #  print("AnalogInputs :" ,controller.getAttachedAnalogInputsList())
+      for analog_input in controller.getAttachedAnalogInputsList():
+        print("Analog Input Type: ", type(analog_input))
+        if (analog_input is not None):
+          analog_input.start()
 
 # Reference: https://gist.github.com/pypt/94d747fe5180851196eb
 def no_duplicates_constructor(loader, node, deep=False):
@@ -281,18 +305,18 @@ def load_devices_from_config():
                 controllers.append(mcp3008_controller)
 
               for sensor_item in mcp3008_values['input_channels']:
-                sensor_id = next(iter(sensor_item))
-                sensor_type = sensor_item[sensor_id]
+                mcp3008_input_id = next(iter(sensor_item))
+                sensor_type = sensor_item[mcp3008_input_id]
 
                 if('Xc3738Sensor' in sensor_type):
                   if(mcp3008_controller is not None):
                     print("***** Create Xc3738Sensor *****")
-                    mcp3008_controller.addSensor(sensor_id, Xc3738Sensor(mcp3008_controller,sensor_id))
+                    mcp3008_controller.addSensor(mcp3008_input_id, Xc3738Sensor())
 
                 if('Xc4438Sensor' in sensor_type):
                   if(mcp3008_controller is not None):
                     print("***** Create Xc4438Sensor *****")
-                    mcp3008_controller.addSensor(sensor_id, Xc4438Sensor(mcp3008_controller,sensor_id))
+                    mcp3008_controller.addSensor(mcp3008_input_id, Xc4438Sensor())
 
         # Check for any GPIO pins with devices
         if(pi_input.find('gpio') != -1):

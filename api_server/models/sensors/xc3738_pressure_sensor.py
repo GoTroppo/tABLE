@@ -6,26 +6,27 @@
 # Importing modules
 from time import sleep  # To add delay
 from models.sensors.sensor import Sensor
-from controllers.neopixel_controller import NeopixelController
-from controllers.mcp3008_controller import Mcp3008Controller
+from controllers.neopixel.neopixel_controller import NeopixelController
+from controllers.mcp3008.mcp3008_controller import Mcp3008Controller
 
 #### Define class ####
-class Xc3738Sensor(Sensor):
+class Xc3738Sensor():
   stop_monitor=False
   # This is the analog channel input number for MCP3008
   MCP3008_CHANNEL=None
 
-  mcp3008_controller=None
+#  mcp3008_controller=None
   neopixel_controller = None
 
   is_monitor_running = False
   is_neopixel_enabled = True
 
-  def __init__(self, mcp3008_controller, mcp3008_channel,sleep=0.05,max_volt=3.3,multiplier=100):
-    super(Sensor, self).__init__()
+  def __init__(self, sleep=0.05,max_volt=3.3,multiplier=100):
+    #super(Sensor, self).__init__()
+    self.is_analog = True
     print("**** Created  xc3738_sensor ****")
-    self.mcp3008_controller = mcp3008_controller
-    self.MCP3008_CHANNEL=mcp3008_channel
+#    self.mcp3008_controller = mcp3008_controller
+#    self.MCP3008_CHANNEL=mcp3008_channel
 
     self.TIME_TO_SLEEP = sleep
     self.MAX_INPUT_VOLTS = max_volt
@@ -55,10 +56,11 @@ class Xc3738Sensor(Sensor):
         if (self.stop_monitor):
           break
         is_monitor_running=True
-        press_output = self.mcp3008_controller.readAnalogInput(self.MCP3008_CHANNEL)
-        press_volts = self.ConvertVolts(press_output)
-        press_level = self.ConvertPressure(press_output)
+#        press_output = self.mcp3008_controller.readAnalogInput(self.MCP3008_CHANNEL)
+#        press_volts = self.ConvertVolts(press_output)
+#        press_level = self.ConvertPressure(press_output)
  
+        ''''
         if(self.DEBUG_MODE):
           self.is_debug_message_printed = False
           print("Pressure : {} ({}V) {} bits".format(press_level,press_volts,press_output))
@@ -73,6 +75,7 @@ class Xc3738Sensor(Sensor):
             self.neopixel_controller.current_neopixel.rainbow_meter(num_pixels)
           else:
             self.neopixel_controller.current_neopixel.blank_neopixel()
+        '''
 
         sleep(self.TIME_TO_SLEEP)
 

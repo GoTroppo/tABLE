@@ -6,11 +6,10 @@
 # Importing modules
 from time import sleep  # To add delay
 from models.sensors.sensor import Sensor
-#from controllers.neopixel_controller import NeopixelController
-from controllers.mcp3008_controller import Mcp3008Controller
+from controllers.mcp3008.mcp3008_controller import Mcp3008Controller
 
 #### Define class ####
-class Xc4438Sensor(Sensor):
+class Xc4438Sensor():
   stop_monitor=False
 
   # This is the analog channel input number for MCP3008
@@ -22,11 +21,13 @@ class Xc4438Sensor(Sensor):
   is_monitor_running = False
   is_neopixel_enabled = False
 
-  def __init__(self, mcp3008_controller, mcp3008_channel,sleep=0.05,max_volt=3.3,multiplier=100):
-    super(Sensor, self).__init__()
+  def __init__(self, sleep=0.05,max_volt=3.3,multiplier=100):
+    #super(Sensor, self).__init__()
+    self.is_analog = True
+
     print("**** Created  xc4438_sensor ****")
-    self.mcp3008_controller = mcp3008_controller
-    self.MCP3008_CHANNEL=mcp3008_channel
+  #  self.mcp3008_controller = mcp3008_controller
+  #  self.MCP3008_CHANNEL=mcp3008_channel
 
     self.TIME_TO_SLEEP = sleep
     self.MAX_INPUT_VOLTS = max_volt

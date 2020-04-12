@@ -1,10 +1,10 @@
 ##### This is a base class for sensors
-
+import weakref
 from threading import Thread
 import logging
 
 class Sensor(Thread):
-  instances=[]
+  instances=weakref.WeakSet()
 
   is_analog=True
   DEBUG_MODE=False
@@ -12,7 +12,7 @@ class Sensor(Thread):
 
   def __init__(self):
     print("**** Created  Sensor ****")
-    Sensor.instances.append(self)
+    Sensor.instances.add(self)
 
     # Call the Thread class's init function
     super(Thread, self).__init__()
