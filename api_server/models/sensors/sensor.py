@@ -3,7 +3,7 @@ import weakref
 from threading import Thread
 import logging
 
-class Sensor(Thread):
+class Sensor():
   instances=weakref.WeakSet()
 
   is_analog=True
@@ -13,9 +13,6 @@ class Sensor(Thread):
   def __init__(self):
     print("**** Created  Sensor ****")
     Sensor.instances.add(self)
-
-    # Call the Thread class's init function
-    super(Thread, self).__init__()
 
   def setAnalog(is_analog):
     self.is_analog = is_analog

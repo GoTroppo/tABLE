@@ -95,21 +95,10 @@ def set_one_or_more_pixel(pixel_index,pixel_colour,single_only):
 def set_debug_on(device_name,id):
   if(device_name == 'mcp3008_input'):
     for controller in controllers:
-      #print("Controller Type: ", type(controller))
       if(isinstance(controller, Mcp3008Controller)):
-      #  print("AnalogInputs :" ,controller.getAttachedAnalogInputsList())
         for analog_input in controller.getAttachedAnalogInputsList():
-          print("Analog Input Type: ", type(analog_input))
           if (analog_input is not None and analog_input.channel_id == id):
             analog_input.DEBUG_MODE=True
-
-
-  '''  
-  if (pressure_sensor_controller is not None):
-      pressure_sensor_controller.DEBUG_MODE=False
-  if (microphone_sensor_controller is not None):
-      microphone_sensor_controller.DEBUG_MODE=True
-  '''
 
   return 'DEBUG MODE ON'
 
@@ -117,19 +106,10 @@ def set_debug_on(device_name,id):
 def set_debug_off(device_name,id):
   if(device_name == 'mcp3008_input'):
     for controller in controllers:
-      #print("Controller Type: ", type(controller))
       if(isinstance(controller, Mcp3008Controller)):
-      #  print("AnalogInputs :" ,controller.getAttachedAnalogInputsList())
         for analog_input in controller.getAttachedAnalogInputsList():
-          print("Analog Input Type: ", type(analog_input))
           if (analog_input is not None and analog_input.channel_id == id):
             analog_input.DEBUG_MODE=False
-  '''
-  if (pressure_sensor_controller is not None):
-      pressure_sensor_controller.DEBUG_MODE=False
-  if (microphone_sensor_controller is not None):
-      microphone_sensor_controller.DEBUG_MODE=False
-  '''
 
   return 'DEBUG MODE OFF'
 
