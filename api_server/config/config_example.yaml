@@ -1,0 +1,32 @@
+---
+raspberry_pi:
+  spi0:
+    sensors:
+      # Define sensor devices connected to analog inputs on each MCP3008
+      mcp3008:
+        0:  # id for mcp3008
+          input_channels:
+            #- {<channel id> : <sensor class name>}
+            - {0 : Xc3738Sensor}
+            - {1 : Xc4438Sensor}
+  spi1:
+    sensors:
+      # Define sensor devices connected to analog inputs on each MCP3008
+      mcp3008:
+        1:  # id for mcp3008
+          input_channels:
+            #- {<channel id> : <sensor class name>}
+            - {0 : Xc3738Sensor}
+            - {1 : Xc3738Sensor}
+
+  gpio18:
+    display_device:
+      # Define each Neopixel and the Raspberry Pi GPIO
+      # <device id> : <device type>
+      0 : neopixel # as per https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel
+
+  gpio21:
+    display_device:
+      # Define each Neopixel and the Raspberry Pi GPIO
+      # <device id> : <device type>
+      1 : neopixel # as per https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel

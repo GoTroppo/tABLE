@@ -1,9 +1,14 @@
 To run the API server use:
 
 ```
-start_server.sh
+./start_server.sh
 ```
 
+##### Configuration
+This now uses a `.env` file to customise the environment
+One parameter is the `DEVICE_CONFIG_FILE` which defines the hardware configuration of devices connected to Raspberry Pi inputs.
+
+An example configuration file is found at `config/config_example.yaml`. Copy this file to `config/config.yaml` and use this with appropriate configuration.
 
 ##### Run the following commands to play with Neopixel ring
 
