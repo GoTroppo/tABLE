@@ -143,7 +143,7 @@ def startSensorMonitors():
         if (sensor is not None):
             sensor.start()
 
-
+# Reference: https://gist.github.com/pypt/94d747fe5180851196eb
 def no_duplicates_constructor(loader, node, deep=False):
   """Check for duplicate keys."""
 
