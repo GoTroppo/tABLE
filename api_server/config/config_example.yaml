@@ -1,0 +1,72 @@
+---
+# Structure
+# raspberry_pi:
+#   spi0:
+#     ........
+#   gpioXX:
+#     ........
+#   gpioXX:
+#     ........
+#   gpioXX:
+#     ........
+# ---------
+#  spi0: # SPI number being used to connect. There can only be 'spi0' or 'spi1'
+#    sensors:
+#      # Define sensor devices connected to analog inputs on each MCP3008
+#      mcp3008:
+#        0:  # id for mcp3008
+#          input_channels:
+#            0 : # <Analog channel id>
+#              Xc3738Sensor: # <sensor class name>
+#                reactors: # (Optional) List of Devices and associated IDs that are used to react to Sensor triggers
+#                  {"neopixel":"gpio10","neopixel":"gpio12"}
+#            1 : Xc4438Sensor # <Analog channel id> : <sensor class name>
+#            2 : # <Analog channel id>
+#              Xc4438Sensor: # <sensor class name>
+#                reactors: # (Optional) List of Devices and associated IDs that are used to react to Sensor triggers
+#                  neopixel:gpio18
+# ------------------
+#  gpio18:
+#    display_device:
+#      0 : neopixel # <device id> : <device type> Define device ID and the Raspberry Pi GPIO
+#  gpio21:
+#    sensor:
+#      1 : Xc4524Sensor # <device id> : <device type> Define device ID and the Raspberry Pi GPIO
+#  gpio12:
+#    sensor:
+      # Define device ID and the Raspberry Pi GPIO
+      # <device id> : <device type> 
+#      2 : Xc4524Sensor 
+#
+#
+
+raspberry_pi:
+  spi0:
+    sensors:
+      # Define sensor devices connected to analog inputs on each MCP3008
+      mcp3008:
+        0:  # id for mcp3008
+          input_channels:
+            #- {<channel id> : <sensor class name>}
+            0 :
+              Xc3738Sensor:
+                reactors: {"gpio18":"neopixel","gpio21":"neopixel"}
+  spi1:
+    sensors:
+      # Define sensor devices connected to analog inputs on each MCP3008
+      mcp3008:
+        1:  # id for mcp3008
+          input_channels:
+            #- {<channel id> : <sensor class name>}
+            0 : Xc3738Sensor
+
+  gpio18:
+    display_device:
+      # Define each Neopixel and the Raspberry Pi GPIO
+      # <device id> : <device type>
+      0 : neopixel # as per https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel
+
+  gpio21:
+    sensor:
+      # <device id> : <device type>
+      1 : Xc4524Sensor

@@ -1,20 +1,34 @@
 ##### This is a base class for sensors
+import weakref
 
-from threading import Thread
-import logging
+class Sensor(object):
+  # Holds all the current Sensors
+  instances=weakref.WeakSet()
 
-class Sensor(Thread):
+  # Maps the GPIO pins to instances of display devices
+  reactors = {}
 
-  isAnalog=True
+  is_analog=True
+  DEBUG_MODE=False
+  is_debug_message_printed = False
 
   def __init__(self):
-    print("**** Created  Sensor ****")
-    # Call the Thread class's init function
-    super(Thread, self).__init__()
+    Sensor.instances.add(self)
 
-  def setAnalog(is_analog):
-    self.isAnalog = is_analog
+  @classmethod
+  def get_instances(cls):
+    return list(Sensor.instances)
 
-  def setToDigital():
-    self.isAnalog = False
+  def setAnalog(self,is_analog):
+    self.is_analog = is_analog
+
+  def setToDigital(self):
+    self.is_analog = False
+
+  def trigger(self,data):
+    pass
+
+  def addReactor(self,id,instance):
+    self.reactors[id]=instance
+
   
