@@ -35,7 +35,6 @@ class Neopixel:
     self.PIXEL_PIN = RPi_GPIO
     self.pixel_strip = Adafruit_NeoPixel(self.NUM_PIXELS, self.PIXEL_PIN.id, self.LED_FREQ_HZ, self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS)
     self.pixel_strip.begin()
-    print("Created instance of NeoPixel")
 
   # Set specific pixel to colour
   # pixel_colour is a hexadecimal number
@@ -122,7 +121,8 @@ class Neopixel:
 
   @staticmethod
   def getRPiPin(gpio_pin_number:int):
-    valid_gpio = [10,12,18,21]
+    valid_gpio = [10,12,18,21]  #Raspberry Pi pins 19,32,12,40 https://pinout.xyz/
+                                # https://thepihut.com/blogs/raspberry-pi-tutorials/using-neopixels-with-the-raspberry-pi
     if(gpio_pin_number in valid_gpio):
       if(gpio_pin_number == 10):
         return board.D10

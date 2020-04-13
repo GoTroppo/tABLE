@@ -8,7 +8,7 @@ from models.sensors.sensor import Sensor
 #### Define class ####
 class Xc4438Sensor(Sensor):
   def __init__(self, max_volt=3.3,multiplier=100):
-    super(Sensor, self).__init__()
+    super(Xc4438Sensor, self).__init__()
     self.is_analog = True
 
     print("**** Created  xc4438_sensor ****")

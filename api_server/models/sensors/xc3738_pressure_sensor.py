@@ -4,17 +4,31 @@
 
 # Importing modules
 from models.sensors.sensor import Sensor
+from models.devices.neopixel import Neopixel
 
 #### Define class ####
 class Xc3738Sensor(Sensor):
   neopixel_controller = None
 
   def __init__(self, max_volt=3.3,multiplier=100):
-    super(Sensor, self).__init__()
+    super(Xc3738Sensor, self).__init__()
+
     self.is_analog = True
     print("**** Created  xc3738_sensor ****")
     self.MAX_INPUT_VOLTS = max_volt
     self.MULTIPLIER = multiplier
+
+  def trigger(self,data):
+     #print("Xc3738Sensor data {}".format(data))
+
+    for gpio in self.reactors:
+      instance=self.reactors[gpio]
+      if(isinstance(instance,Neopixel)):
+        if(data > 100):
+          num_pixels=round(data/100)
+          instance.rainbow_meter(num_pixels)
+        else:
+          instance.blank_neopixel()
 
   # Below function will convert data to voltage
   def ConvertVolts(self,data):
@@ -27,9 +41,4 @@ class Xc3738Sensor(Sensor):
     press = ((data * self.MAX_INPUT_VOLTS * self.MULTIPLIER)/float(1023))
     press = round(press)
     return press
-
-  # ToDo: Remove this !!
-  def addNeopixelController(self,controller):
-    self.neopixel_controller = controller
-    print("addNeopixelController")
 

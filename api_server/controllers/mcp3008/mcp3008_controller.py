@@ -38,8 +38,9 @@ class Mcp3008Controller:
     self.spi.max_speed_hz = 1350000
 
   def addSensor(self,analog_input_channel,sensor:Sensor):
-    input = MCP3008AnalogInput(self,analog_input_channel)
+    input = MCP3008AnalogInput(self.spi,analog_input_channel,sensor)
     self.attached_sensors[input]=sensor
+  #  print("addSensor")
 
   def getSensorList(self):
     sensor_list=[]
@@ -58,8 +59,3 @@ class Mcp3008Controller:
   def getSPI_ID():
     return self.spi_input_id
 
-  # Read MCP3008 data
-  def readAnalogInput(self,channel):
-    adc = self.spi.xfer2([1,(8+channel)<<4,0])
-    data = ((adc[1]&3) << 8) + adc[2]
-    return data
