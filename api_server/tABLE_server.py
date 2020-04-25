@@ -11,11 +11,13 @@ try:
 except ImportError:
     from yaml import Loader
 
+from controllers.gpio.gpio_controller import GpioController
 from controllers.neopixel.neopixel_controller import NeopixelController
 from controllers.mcp3008.mcp3008_controller import Mcp3008Controller
 from models.devices.neopixel import Neopixel
 from models.sensors.xc3738_pressure_sensor import Xc3738Sensor
 from models.sensors.xc4438_microphone_sound import Xc4438Sensor
+from models.sensors.xc4524_ir_obstacle_avoidance import Xc4524Sensor
 
 # Check for a '.env' file to retrieve settings
 # eg "export ENABLE_PRESSURE_SENSOR=1"
@@ -32,15 +34,21 @@ dataLock = threading.Lock()
 # thread handler
 yourThread = None
 
+gpio_controller = None
 neopixel_controller = None
 mcp3008_controller = None
 
 controllers = []
-valid_sensor_types = ["Xc3738Sensor","Xc4438Sensor"]
+valid_sensor_types = {\
+"Analog" : ["Xc3738Sensor","Xc4438Sensor"], \
+"Digital" : ["Xc4524Sensor"] \
+}
+
 valid_display_devices = ['neopixel']
 
 app = Flask(__name__)
 
+# Define valid routes for the server API
 @app.route('/')
 def index():
   return 'Come on in and sit round the tABLE!'
@@ -106,7 +114,12 @@ def set_debug_on(device_name,id):
         for analog_input in controller.getAttachedAnalogInputsList():
           if (analog_input is not None and analog_input.channel_id == id):
             analog_input.DEBUG_MODE=True
-
+  if(device_name == 'gpio'):
+    for controller in controllers:
+      if(isinstance(controller, GpioController)):
+        for gpio_port in controller.getAttachedPortsList():
+          if (gpio_port is not None and gpio_port.gpio_id == id):
+            gpio_port.DEBUG_MODE=True
   return 'DEBUG MODE ON'
 
 @app.route('/debug_off/<string:device_name>/<int:id>')
@@ -117,6 +130,12 @@ def set_debug_off(device_name,id):
         for analog_input in controller.getAttachedAnalogInputsList():
           if (analog_input is not None and analog_input.channel_id == id):
             analog_input.DEBUG_MODE=False
+  if(device_name == 'gpio'):
+    for controller in controllers:
+      if(isinstance(controller, GpioController)):
+        for gpio_port in controller.getAttachedPortsList():
+          if (gpio_port is not None and gpio_port.gpio_id == id):
+            gpio_port.DEBUG_MODE=False     
 
   return 'DEBUG MODE OFF'
 
@@ -146,7 +165,12 @@ def startSensorMonitors():
   # Create your thread
   print("startSensorMonitors")
   for controller in controllers:
-    #print("Controller Type: ", type(controller))
+    #Start Monitor for all GPIO ports
+    if(isinstance(controller, GpioController)):
+      for gpio_port in controller.getAttachedPortsList():
+        if (gpio_port is not None):
+          gpio_port.start()
+    # Start monitor for all analog inputs for MCP3008
     if(isinstance(controller, Mcp3008Controller)):
       for analog_input in controller.getAttachedAnalogInputsList():
         if (analog_input is not None):
@@ -214,7 +238,7 @@ def validate_config():
                 if(type(sensor_item) is dict):  # If we have not defined 'reactors' then we only get a string
                   sensor_type = next(iter(sensor_item))
                   # Check valid sensor types
-                  if(sensor_type not in valid_sensor_types):
+                  if(sensor_type not in valid_sensor_types["Analog"]):
                     print_config_error("Invalid Sensor Type - '{}'".format(sensor_type))
                   #print("sensor_item {}".format(sensor_item))
 
@@ -243,14 +267,20 @@ def validate_config():
         gpio_number=int(pi_input[len('gpio'):])
         if(gpio_number < 1 or gpio_number > 26):
           print_config_error("Invalid GPIO number\nFound '{}'".format(pi_input))
-        if('display_device' not in pi_input_values):
+        if('display_device' not in pi_input_values and 'sensor' not in pi_input_values):
           print_config_error("Invalid type used for GPIO.\nFound '{}':'{}'".format(pi_input,next(iter(pi_input_values))))
-        if(pi_input_values['display_device'] not in valid_display_devices):
-          print_config_error("Invalid display_device used for GPIO.\nFound '{}':'{}'".format(pi_input,pi_input_values['display_device']))
+        if('display_device' in pi_input_values):
+          if(pi_input_values['display_device'] not in valid_display_devices):
+            print_config_error("Invalid display_device used for GPIO.\nFound '{}':'{}'".format(pi_input,pi_input_values['display_device']))
+        else:
+          if('sensor' in pi_input_values):
+            # Is is a valid GPIO sensor ?
+            if(pi_input_values['sensor'] not in valid_sensor_types["Digital"]):
+              print_config_error("Invalid Sensor type used for GPIO.\nFound '{}':'{}'".format(pi_input,pi_input_values['sensor']))
 
 
 def load_devices_from_config():
-  global controllers,neopixel_controller
+  global controllers,neopixel_controller,gpio_controller
   global valid_sensor_types
   global valid_display_devices
 
@@ -300,7 +330,7 @@ def load_devices_from_config():
                   sensor_type=sensor_item
 
                 sensor_obj=None
-                if(sensor_type in valid_sensor_types):
+                if(sensor_type in valid_sensor_types["Analog"]):
                   if(sensor_type =='Xc3738Sensor'):
                     sensor_obj = Xc3738Sensor()
                   elif(sensor_type == 'Xc4438Sensor'):
@@ -308,7 +338,7 @@ def load_devices_from_config():
                   if(mcp3008_controller is not None and sensor_obj is not None):
                       mcp3008_controller.addSensor(mcp3008_input_id, sensor_obj)
                 else:
-                  print_config_error("Invalid Sensor Type.\nFound '{}':'{}'".format(sensor_type))
+                  print_config_error("Invalid Sensor Type.\nFound '{}'".format(sensor_type))
                 
                 # Add in reactors to Sensors
                 if(type(sensor_item) is dict):
@@ -342,15 +372,27 @@ def load_devices_from_config():
                     if(sensor.reactors[gpio] is None):
                       sensor.reactors[gpio]=NeopixelController.neopixel_list[gpio_pin]
 
-                #ToDo: Take this out when  we manage triggers better
-                #for controller in controllers:
-                #  if(isinstance(controller, Mcp3008Controller)):
-                #    for sensor in controller.getSensorList():
-                #      if(isinstance(sensor, Xc3738Sensor)):
-                #        sensor.addNeopixelController(neopixel_controller)
-
           if('sensor' in pi_input_values):
-            print("Add me in !!")
+            # Attaching in Sensor to GPIO Port 
+            #print("Add me in !!")
+            if(gpio_controller is None):
+              is_gpio_controller_exists=False
+              for controller in controllers:
+                if(isinstance(controller, GpioController)):
+                  is_gpio_controller_exists=True
+              if(not is_gpio_controller_exists):
+                gpio_controller = GpioController()
+                controllers.append(gpio_controller)
+
+            sensor_type = pi_input_values['sensor']
+            sensor_obj=None
+            if(sensor_type in valid_sensor_types["Digital"]):
+              if(sensor_type =='Xc4524Sensor'):
+                if(gpio_controller is not None):
+                  gpio_number=int(pi_input[len('gpio'):])
+                  gpio_controller.addSensor(gpio_number, Xc4524Sensor())
+            else:
+              print_config_error("Invalid Sensor Type For GPIO {}.\nFound '{}'".format(int(pi_input[len('gpio'):]),sensor_type))
 
     # While Testing, exit gunicorn
     if(DEBUG):

@@ -61,12 +61,10 @@ raspberry_pi:
             0 : Xc3738Sensor
 
   gpio18:
-    display_device:
       # Define each Neopixel and the Raspberry Pi GPIO
       # <device id> : <device type>
-      0 : neopixel # as per https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel
+      display_device:neopixel # as per https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel
 
   gpio21:
-    sensor:
       # <device id> : <device type>
-      1 : Xc4524Sensor
+    sensor: Xc4524Sensor
