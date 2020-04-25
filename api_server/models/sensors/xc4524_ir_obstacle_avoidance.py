@@ -1,5 +1,7 @@
 ############
 # This class defines XC-4524 IR Obstacle Avoidance sensor
+# Reference:
+#   https://www.jaycar.com.au/arduino-compatible-ir-obstacle-avoidance-sensor-module/p/XC4524
 ############
 
 # Importing modules
@@ -20,15 +22,13 @@ class Xc4524Sensor(Sensor):
 
   def trigger(self,data):
     #print("Xc4524Sensor data {}".format(data))
-    pass
-    '''
+    #pass
+  
     for gpio in self.reactors:
       instance=self.reactors[gpio]
       if(isinstance(instance,Neopixel)):
-        if(data > 100):
-          num_pixels=round(data/100)
-          instance.rainbow_meter(num_pixels)
+        if(data < 1):
+          instance.set_pixel(10,"0000FF")
         else:
           instance.blank_neopixel()
-    '''
 

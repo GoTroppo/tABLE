@@ -196,6 +196,27 @@ def print_config_error(msg):
   print(msg)
   sys.exit(errno.EINTR)
 
+def validate_reactors(config,reactors_list):
+  # Check that reactors set for mcp3008 match those set up as gpio
+  if('reactors' in reactors_list):
+    for rpi_connect, device_name in reactors_list['reactors'].items():
+      if(rpi_connect.find('gpio') != -1):
+        # Check if GPIO number is valid
+        gpio_number=int(rpi_connect[len('gpio'):])
+        if(gpio_number < 1 or gpio_number > 26):
+          print_config_error("Invalid GPIO number\nFound '{}'".format(rpi_connect))
+        # Check if neopixel set up is valid
+        if(device_name == 'neopixel'):
+          if(rpi_connect not in config['raspberry_pi']):
+            print_config_error("Reactor for {}, is missing.".format(reactors_list))
+          if('display_device' not in config['raspberry_pi'][rpi_connect]):
+            print_config_error("Invalid type used for GPIO.\nFound '{}':'{}'".format(rpi_connect,next(iter(config['raspberry_pi'][rpi_connect]))))
+          if(device_name not in config['raspberry_pi'][rpi_connect]['display_device']):
+            print_config_error("Reactor for {}, missing.".format(reactors_list))
+        else:
+          print_config_error("Invalid type used for Reactor for {}".format(reactors_list))
+
+
 def validate_config():
   global valid_sensor_types
   global valid_display_devices
@@ -244,6 +265,9 @@ def validate_config():
 
                   # Check that reactors set for mcp3008 match those set up as gpio
                   if('reactors' in sensor_item[sensor_type]):
+                    validate_reactors(config,sensor_item[sensor_type])
+                    
+                    '''
                     for rpi_connect, device_name in sensor_item[sensor_type]['reactors'].items():
                       if(rpi_connect.find('gpio') != -1):
                         # Check if GPIO number is valid
@@ -260,6 +284,7 @@ def validate_config():
                             print_config_error("Reactor for MCP3008 id {}, analog input channel {}, missing.\nLooking for '{}':'{}'".format(mcp3008_id,mcp3008_channel_id, rpi_connect,device_name))
                         else:
                           print_config_error("Invalid type used for Reactor for MCP3008 id {}, analog input channel {}.\nFound '{}':'{}'".format(mcp3008_id,mcp3008_channel_id, rpi_connect,device_name))
+                  '''
 
       # Check for any Invalid GPIO pin numbers
       #https://www.raspberrypi.org/documentation/usage/gpio/
@@ -274,9 +299,33 @@ def validate_config():
             print_config_error("Invalid display_device used for GPIO.\nFound '{}':'{}'".format(pi_input,pi_input_values['display_device']))
         else:
           if('sensor' in pi_input_values):
-            # Is is a valid GPIO sensor ?
-            if(pi_input_values['sensor'] not in valid_sensor_types["Digital"]):
-              print_config_error("Invalid Sensor type used for GPIO.\nFound '{}':'{}'".format(pi_input,pi_input_values['sensor']))
+            if(type(pi_input_values['sensor']) is dict):  # If we have not defined 'reactors' then we only get a string
+              sensor_type = next(iter(pi_input_values['sensor']))
+              # Check valid sensor types
+              if(sensor_type not in valid_sensor_types["Digital"]):
+                print_config_error("Invalid Sensor Type - '{}'".format(sensor_type))
+              #print("sensor_item {}".format(sensor_item))
+
+              # Check that reactors set for gpio match those set up as gpio
+              if('reactors' in pi_input_values['sensor'][sensor_type]):
+                validate_reactors(config,pi_input_values['sensor'][sensor_type])
+            else:
+              # Is is a valid GPIO sensor ?
+              if(pi_input_values['sensor'] not in valid_sensor_types["Digital"]):
+                print_config_error("Invalid Sensor type used for GPIO.\nFound '{}':'{}'".format(pi_input,pi_input_values['sensor']))
+
+
+def addSensorToGpioController(sensor_type,gpio_id):
+  global gpio_controller
+  sensor_obj=None
+
+  if(sensor_type in valid_sensor_types["Digital"]):
+    if(sensor_type =='Xc4524Sensor'):
+      if(gpio_controller is not None):
+        gpio_number=gpio_id
+        sensor_obj=Xc4524Sensor()
+        gpio_controller.addSensor(gpio_number, sensor_obj)
+  return sensor_obj
 
 
 def load_devices_from_config():
@@ -384,15 +433,25 @@ def load_devices_from_config():
                 gpio_controller = GpioController()
                 controllers.append(gpio_controller)
 
-            sensor_type = pi_input_values['sensor']
+            sensor_item = pi_input_values['sensor']
             sensor_obj=None
-            if(sensor_type in valid_sensor_types["Digital"]):
-              if(sensor_type =='Xc4524Sensor'):
-                if(gpio_controller is not None):
-                  gpio_number=int(pi_input[len('gpio'):])
-                  gpio_controller.addSensor(gpio_number, Xc4524Sensor())
+            sensor_type=None
+            reactors=None
+
+            if(type(sensor_item) is dict):  # If we have not defined 'reactors' then we only get a string
+              sensor_type = next(iter(sensor_item))
+              sensor_obj=addSensorToGpioController(sensor_type,int(pi_input[len('gpio'):]))
+
+              #Create sensor object and Add in reactors to Sensors
+              for gpio_id, reactor in sensor_item[sensor_type]['reactors'].items():
+                if(sensor_obj is not None):
+                    # Set as None until we have created instance associated with GPIO
+                  sensor_obj.addReactor(gpio_id,None)
+
             else:
-              print_config_error("Invalid Sensor Type For GPIO {}.\nFound '{}'".format(int(pi_input[len('gpio'):]),sensor_type))
+              sensor_type=sensor_item
+              sensor_obj=addSensorToGpioController(sensor_type,int(pi_input[len('gpio'):]))
+
 
     # While Testing, exit gunicorn
     if(DEBUG):
