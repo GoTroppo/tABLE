@@ -11,7 +11,7 @@ One parameter is the `DEVICE_CONFIG_FILE` which defines the hardware configurati
 An example configuration file is found at `config/config_example.yaml`. Copy this file to `config/config.yaml` and use this with appropriate configuration.
 
 ###### Server API
-To use the API see examples at [API documentation](./documentation/api_server/tABLE_server.html).
+To use the API see examples at [API documentation](../documentation/api_server/tABLE_server.html).
 
 ##### Run the following commands to play with Neopixel ring
 Note that you need to use the GPIO number to access
