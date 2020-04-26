@@ -1,3 +1,10 @@
+'''This is a python [flask server](https://pypi.org/project/Flask) that runs on a Raspberry Pi 3 and takes requests to read sensor data and set device states (such as a Neopixel Ring).
+It has an API to control various devices and ports.
+
+It uses a configuration file to define the devices connected to the Raspberry Pi.
+The configuration file path is defined in a `.env` file with the `DEVICE_CONFIG_FILE` variable.
+'''
+
 import sys,os,errno,time,yaml
 import threading,atexit
 import board
@@ -84,6 +91,18 @@ def do_rainbow_meter_blank(gpio):
 # Set the brightness for all pixels
 @app.route('/brightness/<int:gpio>/<int:brightness>', methods=['GET'])
 def set_pixel_strip_brightness(gpio,brightness):
+  '''API: **GET** `/brightness/int:gpio/int:brightness_value`
+
+  Set the Neopixel ring brightness for all pixels for specific GPIO port.
+
+  For example:
+
+  ```
+  curl -si localhost:5000/brightness/18/100
+  ```
+
+  '''
+
   result=neopixel_controller.set_pixel_strip_brightness(gpio,brightness)
   response = {'brightness': brightness} if result else False
   return jsonify(response)

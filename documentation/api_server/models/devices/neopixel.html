@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>api_server.models.devices.neopixel API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>api_server.models.devices.neopixel</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># Class to communicate with Neopixel
+import time
+import board
+import neopixel # https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel
+from rpi_ws281x import *
+
+class Neopixel:
+  # LED strip configuration:
+  PIXEL_COUNT = 24      # Number of LED pixels.
+
+  # Choose an open pin connected to the Data In of the NeoPixel strip, i.e. board.D18
+  # NeoPixels must be connected to D10, D12, D18 or D21 to work.
+  PIXEL_PIN = board.D18     # GPIO pin connected to the pixels (must support PWM!).
+                            # Type: adafruit_blinka.microcontroller.bcm283x.pin.Pin
+
+  LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
+  LED_DMA = 10       # DMA channel to use for generating signal (try 10)
+  LED_BRIGHTNESS = 100  # Set to 0 for darkest and 255 for brightest
+  # True to invert the signal (when using NPN transistor level shift)
+  LED_INVERT = False
+
+  # The number of NeoPixels
+  NUM_PIXELS = 24
+
+  # The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
+  # For RGBW NeoPixels, simply change the ORDER to RGBW or GRBW.
+
+  # Order is reversed for Duinotech RGB LED Ring so use GRB
+  ORDER = neopixel.GRB
+
+  # Create NeoPixel object with appropriate configuration.
+  pixel_strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL_PIN.id, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+
+  def __init__(self,RPi_GPIO): # RPi_GPIO Type: adafruit_blinka.microcontroller.bcm283x.pin.Pin
+    self.PIXEL_PIN = RPi_GPIO
+    self.pixel_strip = Adafruit_NeoPixel(self.NUM_PIXELS, self.PIXEL_PIN.id, self.LED_FREQ_HZ, self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS)
+    self.pixel_strip.begin()
+
+  # Set specific pixel to colour
+  # pixel_colour is a hexadecimal number
+  # set_single is a boolean flag to either leave existing pixels showing or only show selected pixel
+  def set_pixel(self,pixel_index: int, pixel_colour: str, set_single: bool = True):
+    if set_single == 1 :
+      # Clear all pixels
+      self.blank_neopixel()
+
+    pixel_color_tup = Neopixel.hex_to_rgb(pixel_colour)
+    self.pixel_strip.setPixelColor(pixel_index, Color(pixel_color_tup[0], pixel_color_tup[1], pixel_color_tup[2]))    
+
+    self.pixel_strip.show()
+
+  # set all pixels to blank
+  def blank_neopixel(self):
+    for i in range(0, self.pixel_strip.numPixels(), 1):
+      self.pixel_strip.setPixelColor(i, Color(0, 0, 0))
+    self.pixel_strip.show()
+
+  # Rainbow of colours
+  def wheel(self,pos):
+    &#34;&#34;&#34;Generate rainbow colors across 0-255 positions.&#34;&#34;&#34;
+    if pos &lt; 85:
+      return Color(pos * 3, 255 - pos * 3, 0)
+    elif pos &lt; 170:
+      pos -= 85
+      return Color(255 - pos * 3, 0, pos * 3)
+    else:
+      pos -= 170
+      return Color(0, pos * 3, 255 - pos * 3)
+
+  #Draw rainbow that fades across all pixels at once.
+  def rainbow(self,num_pixels=None,wait_ms=20,iterations=1):
+    if(num_pixels is None):
+      num_pixels=self.pixel_strip.numPixels()
+    for j in range(256*iterations):
+      for i in range(num_pixels):
+        self.pixel_strip.setPixelColor(i, self.wheel((i+j) &amp; 255))
+      self.pixel_strip.show()
+      time.sleep(wait_ms/1000.0)
+
+  #Draw rainbow that fades across all pixels at once.
+  def rainbow_meter(self,num_pixels=None,blank_pixels=False,wait_ms=20):
+    if(num_pixels is None):
+      num_pixels=self.pixel_strip.numPixels()
+
+    if(blank_pixels):
+      for i in range(num_pixels,-1,-1):
+        self.pixel_strip.setPixelColor(i, 0)
+        self.pixel_strip.show()
+        time.sleep(wait_ms/1000.0)                
+    else:
+      #self.blank_neopixel()
+      for i in range(num_pixels):
+        self.pixel_strip.setPixelColor(i, self.wheel(i &amp; 255))
+        self.pixel_strip.show()
+        time.sleep(wait_ms/1000.0)
+          
+  #Draw rainbow that uniformly distributes itself across all pixels.
+  def rainbowCycle(self,wait_ms=20, iterations=5):
+    for j in range(256*iterations):
+      for i in range(self.pixel_strip.numPixels()):
+        self.pixel_strip.setPixelColor(i, self.wheel((int(i * 256 / self.pixel_strip.numPixels()) + j) &amp; 255))
+      self.pixel_strip.show()
+      time.sleep(wait_ms/1000.0)
+
+  #Rainbow movie theater light style chaser animation.
+  def theaterChaseRainbow(self,wait_ms=50, chase_range=256):
+    for j in range(chase_range):
+        for q in range(3):
+          for i in range(0, self.pixel_strip.numPixels(), 3):
+            self.pixel_strip.setPixelColor(i+q, self.wheel((i+j) % 255))
+          self.pixel_strip.show()
+          time.sleep(wait_ms/1000.0)
+          for i in range(0, self.pixel_strip.numPixels(), 3):
+            self.pixel_strip.setPixelColor(i+q, 0)
+
+  #Return (red, green, blue) for the color given as hex form for rrggbb.
+  @staticmethod
+  def hex_to_rgb(value):
+    lv = len(value)
+    return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
+
+  @staticmethod
+  def getRPiPin(gpio_pin_number:int):
+    valid_gpio = [10,12,18,21]  #Raspberry Pi pins 19,32,12,40 https://pinout.xyz/
+                                # https://thepihut.com/blogs/raspberry-pi-tutorials/using-neopixels-with-the-raspberry-pi
+    if(gpio_pin_number in valid_gpio):
+      if(gpio_pin_number == 10):
+        return board.D10
+      if(gpio_pin_number == 12):
+        return board.D12
+      if(gpio_pin_number == 18):
+        return board.D18
+      if(gpio_pin_number == 21):
+        return board.D21
+
+    return None</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="api_server.models.devices.neopixel.Neopixel"><code class="flex name class">
+<span>class <span class="ident">Neopixel</span></span>
+<span>(</span><span>RPi_GPIO)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Neopixel:
+  # LED strip configuration:
+  PIXEL_COUNT = 24      # Number of LED pixels.
+
+  # Choose an open pin connected to the Data In of the NeoPixel strip, i.e. board.D18
+  # NeoPixels must be connected to D10, D12, D18 or D21 to work.
+  PIXEL_PIN = board.D18     # GPIO pin connected to the pixels (must support PWM!).
+                            # Type: adafruit_blinka.microcontroller.bcm283x.pin.Pin
+
+  LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
+  LED_DMA = 10       # DMA channel to use for generating signal (try 10)
+  LED_BRIGHTNESS = 100  # Set to 0 for darkest and 255 for brightest
+  # True to invert the signal (when using NPN transistor level shift)
+  LED_INVERT = False
+
+  # The number of NeoPixels
+  NUM_PIXELS = 24
+
+  # The order of the pixel colors - RGB or GRB. Some NeoPixels have red and green reversed!
+  # For RGBW NeoPixels, simply change the ORDER to RGBW or GRBW.
+
+  # Order is reversed for Duinotech RGB LED Ring so use GRB
+  ORDER = neopixel.GRB
+
+  # Create NeoPixel object with appropriate configuration.
+  pixel_strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL_PIN.id, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+
+  def __init__(self,RPi_GPIO): # RPi_GPIO Type: adafruit_blinka.microcontroller.bcm283x.pin.Pin
+    self.PIXEL_PIN = RPi_GPIO
+    self.pixel_strip = Adafruit_NeoPixel(self.NUM_PIXELS, self.PIXEL_PIN.id, self.LED_FREQ_HZ, self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS)
+    self.pixel_strip.begin()
+
+  # Set specific pixel to colour
+  # pixel_colour is a hexadecimal number
+  # set_single is a boolean flag to either leave existing pixels showing or only show selected pixel
+  def set_pixel(self,pixel_index: int, pixel_colour: str, set_single: bool = True):
+    if set_single == 1 :
+      # Clear all pixels
+      self.blank_neopixel()
+
+    pixel_color_tup = Neopixel.hex_to_rgb(pixel_colour)
+    self.pixel_strip.setPixelColor(pixel_index, Color(pixel_color_tup[0], pixel_color_tup[1], pixel_color_tup[2]))    
+
+    self.pixel_strip.show()
+
+  # set all pixels to blank
+  def blank_neopixel(self):
+    for i in range(0, self.pixel_strip.numPixels(), 1):
+      self.pixel_strip.setPixelColor(i, Color(0, 0, 0))
+    self.pixel_strip.show()
+
+  # Rainbow of colours
+  def wheel(self,pos):
+    &#34;&#34;&#34;Generate rainbow colors across 0-255 positions.&#34;&#34;&#34;
+    if pos &lt; 85:
+      return Color(pos * 3, 255 - pos * 3, 0)
+    elif pos &lt; 170:
+      pos -= 85
+      return Color(255 - pos * 3, 0, pos * 3)
+    else:
+      pos -= 170
+      return Color(0, pos * 3, 255 - pos * 3)
+
+  #Draw rainbow that fades across all pixels at once.
+  def rainbow(self,num_pixels=None,wait_ms=20,iterations=1):
+    if(num_pixels is None):
+      num_pixels=self.pixel_strip.numPixels()
+    for j in range(256*iterations):
+      for i in range(num_pixels):
+        self.pixel_strip.setPixelColor(i, self.wheel((i+j) &amp; 255))
+      self.pixel_strip.show()
+      time.sleep(wait_ms/1000.0)
+
+  #Draw rainbow that fades across all pixels at once.
+  def rainbow_meter(self,num_pixels=None,blank_pixels=False,wait_ms=20):
+    if(num_pixels is None):
+      num_pixels=self.pixel_strip.numPixels()
+
+    if(blank_pixels):
+      for i in range(num_pixels,-1,-1):
+        self.pixel_strip.setPixelColor(i, 0)
+        self.pixel_strip.show()
+        time.sleep(wait_ms/1000.0)                
+    else:
+      #self.blank_neopixel()
+      for i in range(num_pixels):
+        self.pixel_strip.setPixelColor(i, self.wheel(i &amp; 255))
+        self.pixel_strip.show()
+        time.sleep(wait_ms/1000.0)
+          
+  #Draw rainbow that uniformly distributes itself across all pixels.
+  def rainbowCycle(self,wait_ms=20, iterations=5):
+    for j in range(256*iterations):
+      for i in range(self.pixel_strip.numPixels()):
+        self.pixel_strip.setPixelColor(i, self.wheel((int(i * 256 / self.pixel_strip.numPixels()) + j) &amp; 255))
+      self.pixel_strip.show()
+      time.sleep(wait_ms/1000.0)
+
+  #Rainbow movie theater light style chaser animation.
+  def theaterChaseRainbow(self,wait_ms=50, chase_range=256):
+    for j in range(chase_range):
+        for q in range(3):
+          for i in range(0, self.pixel_strip.numPixels(), 3):
+            self.pixel_strip.setPixelColor(i+q, self.wheel((i+j) % 255))
+          self.pixel_strip.show()
+          time.sleep(wait_ms/1000.0)
+          for i in range(0, self.pixel_strip.numPixels(), 3):
+            self.pixel_strip.setPixelColor(i+q, 0)
+
+  #Return (red, green, blue) for the color given as hex form for rrggbb.
+  @staticmethod
+  def hex_to_rgb(value):
+    lv = len(value)
+    return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))
+
+  @staticmethod
+  def getRPiPin(gpio_pin_number:int):
+    valid_gpio = [10,12,18,21]  #Raspberry Pi pins 19,32,12,40 https://pinout.xyz/
+                                # https://thepihut.com/blogs/raspberry-pi-tutorials/using-neopixels-with-the-raspberry-pi
+    if(gpio_pin_number in valid_gpio):
+      if(gpio_pin_number == 10):
+        return board.D10
+      if(gpio_pin_number == 12):
+        return board.D12
+      if(gpio_pin_number == 18):
+        return board.D18
+      if(gpio_pin_number == 21):
+        return board.D21
+
+    return None</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="api_server.models.devices.neopixel.Neopixel.LED_BRIGHTNESS"><code class="name">var <span class="ident">LED_BRIGHTNESS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.LED_DMA"><code class="name">var <span class="ident">LED_DMA</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.LED_FREQ_HZ"><code class="name">var <span class="ident">LED_FREQ_HZ</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.LED_INVERT"><code class="name">var <span class="ident">LED_INVERT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.NUM_PIXELS"><code class="name">var <span class="ident">NUM_PIXELS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.ORDER"><code class="name">var <span class="ident">ORDER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.PIXEL_COUNT"><code class="name">var <span class="ident">PIXEL_COUNT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.PIXEL_PIN"><code class="name">var <span class="ident">PIXEL_PIN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.pixel_strip"><code class="name">var <span class="ident">pixel_strip</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="api_server.models.devices.neopixel.Neopixel.getRPiPin"><code class="name flex">
+<span>def <span class="ident">getRPiPin</span></span>(<span>gpio_pin_number: int)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def getRPiPin(gpio_pin_number:int):
+  valid_gpio = [10,12,18,21]  #Raspberry Pi pins 19,32,12,40 https://pinout.xyz/
+                              # https://thepihut.com/blogs/raspberry-pi-tutorials/using-neopixels-with-the-raspberry-pi
+  if(gpio_pin_number in valid_gpio):
+    if(gpio_pin_number == 10):
+      return board.D10
+    if(gpio_pin_number == 12):
+      return board.D12
+    if(gpio_pin_number == 18):
+      return board.D18
+    if(gpio_pin_number == 21):
+      return board.D21
+
+  return None</code></pre>
+</details>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.hex_to_rgb"><code class="name flex">
+<span>def <span class="ident">hex_to_rgb</span></span>(<span>value)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def hex_to_rgb(value):
+  lv = len(value)
+  return tuple(int(value[i:i + lv // 3], 16) for i in range(0, lv, lv // 3))</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="api_server.models.devices.neopixel.Neopixel.blank_neopixel"><code class="name flex">
+<span>def <span class="ident">blank_neopixel</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def blank_neopixel(self):
+  for i in range(0, self.pixel_strip.numPixels(), 1):
+    self.pixel_strip.setPixelColor(i, Color(0, 0, 0))
+  self.pixel_strip.show()</code></pre>
+</details>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.rainbow"><code class="name flex">
+<span>def <span class="ident">rainbow</span></span>(<span>self, num_pixels=None, wait_ms=20, iterations=1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rainbow(self,num_pixels=None,wait_ms=20,iterations=1):
+  if(num_pixels is None):
+    num_pixels=self.pixel_strip.numPixels()
+  for j in range(256*iterations):
+    for i in range(num_pixels):
+      self.pixel_strip.setPixelColor(i, self.wheel((i+j) &amp; 255))
+    self.pixel_strip.show()
+    time.sleep(wait_ms/1000.0)</code></pre>
+</details>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.rainbowCycle"><code class="name flex">
+<span>def <span class="ident">rainbowCycle</span></span>(<span>self, wait_ms=20, iterations=5)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rainbowCycle(self,wait_ms=20, iterations=5):
+  for j in range(256*iterations):
+    for i in range(self.pixel_strip.numPixels()):
+      self.pixel_strip.setPixelColor(i, self.wheel((int(i * 256 / self.pixel_strip.numPixels()) + j) &amp; 255))
+    self.pixel_strip.show()
+    time.sleep(wait_ms/1000.0)</code></pre>
+</details>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.rainbow_meter"><code class="name flex">
+<span>def <span class="ident">rainbow_meter</span></span>(<span>self, num_pixels=None, blank_pixels=False, wait_ms=20)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rainbow_meter(self,num_pixels=None,blank_pixels=False,wait_ms=20):
+  if(num_pixels is None):
+    num_pixels=self.pixel_strip.numPixels()
+
+  if(blank_pixels):
+    for i in range(num_pixels,-1,-1):
+      self.pixel_strip.setPixelColor(i, 0)
+      self.pixel_strip.show()
+      time.sleep(wait_ms/1000.0)                
+  else:
+    #self.blank_neopixel()
+    for i in range(num_pixels):
+      self.pixel_strip.setPixelColor(i, self.wheel(i &amp; 255))
+      self.pixel_strip.show()
+      time.sleep(wait_ms/1000.0)</code></pre>
+</details>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.set_pixel"><code class="name flex">
+<span>def <span class="ident">set_pixel</span></span>(<span>self, pixel_index: int, pixel_colour: str, set_single: bool = True)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_pixel(self,pixel_index: int, pixel_colour: str, set_single: bool = True):
+  if set_single == 1 :
+    # Clear all pixels
+    self.blank_neopixel()
+
+  pixel_color_tup = Neopixel.hex_to_rgb(pixel_colour)
+  self.pixel_strip.setPixelColor(pixel_index, Color(pixel_color_tup[0], pixel_color_tup[1], pixel_color_tup[2]))    
+
+  self.pixel_strip.show()</code></pre>
+</details>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.theaterChaseRainbow"><code class="name flex">
+<span>def <span class="ident">theaterChaseRainbow</span></span>(<span>self, wait_ms=50, chase_range=256)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def theaterChaseRainbow(self,wait_ms=50, chase_range=256):
+  for j in range(chase_range):
+      for q in range(3):
+        for i in range(0, self.pixel_strip.numPixels(), 3):
+          self.pixel_strip.setPixelColor(i+q, self.wheel((i+j) % 255))
+        self.pixel_strip.show()
+        time.sleep(wait_ms/1000.0)
+        for i in range(0, self.pixel_strip.numPixels(), 3):
+          self.pixel_strip.setPixelColor(i+q, 0)</code></pre>
+</details>
+</dd>
+<dt id="api_server.models.devices.neopixel.Neopixel.wheel"><code class="name flex">
+<span>def <span class="ident">wheel</span></span>(<span>self, pos)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate rainbow colors across 0-255 positions.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wheel(self,pos):
+  &#34;&#34;&#34;Generate rainbow colors across 0-255 positions.&#34;&#34;&#34;
+  if pos &lt; 85:
+    return Color(pos * 3, 255 - pos * 3, 0)
+  elif pos &lt; 170:
+    pos -= 85
+    return Color(255 - pos * 3, 0, pos * 3)
+  else:
+    pos -= 170
+    return Color(0, pos * 3, 255 - pos * 3)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="api_server.models.devices" href="index.html">api_server.models.devices</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="api_server.models.devices.neopixel.Neopixel" href="#api_server.models.devices.neopixel.Neopixel">Neopixel</a></code></h4>
+<ul class="two-column">
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.LED_BRIGHTNESS" href="#api_server.models.devices.neopixel.Neopixel.LED_BRIGHTNESS">LED_BRIGHTNESS</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.LED_DMA" href="#api_server.models.devices.neopixel.Neopixel.LED_DMA">LED_DMA</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.LED_FREQ_HZ" href="#api_server.models.devices.neopixel.Neopixel.LED_FREQ_HZ">LED_FREQ_HZ</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.LED_INVERT" href="#api_server.models.devices.neopixel.Neopixel.LED_INVERT">LED_INVERT</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.NUM_PIXELS" href="#api_server.models.devices.neopixel.Neopixel.NUM_PIXELS">NUM_PIXELS</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.ORDER" href="#api_server.models.devices.neopixel.Neopixel.ORDER">ORDER</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.PIXEL_COUNT" href="#api_server.models.devices.neopixel.Neopixel.PIXEL_COUNT">PIXEL_COUNT</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.PIXEL_PIN" href="#api_server.models.devices.neopixel.Neopixel.PIXEL_PIN">PIXEL_PIN</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.blank_neopixel" href="#api_server.models.devices.neopixel.Neopixel.blank_neopixel">blank_neopixel</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.getRPiPin" href="#api_server.models.devices.neopixel.Neopixel.getRPiPin">getRPiPin</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.hex_to_rgb" href="#api_server.models.devices.neopixel.Neopixel.hex_to_rgb">hex_to_rgb</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.pixel_strip" href="#api_server.models.devices.neopixel.Neopixel.pixel_strip">pixel_strip</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.rainbow" href="#api_server.models.devices.neopixel.Neopixel.rainbow">rainbow</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.rainbowCycle" href="#api_server.models.devices.neopixel.Neopixel.rainbowCycle">rainbowCycle</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.rainbow_meter" href="#api_server.models.devices.neopixel.Neopixel.rainbow_meter">rainbow_meter</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.set_pixel" href="#api_server.models.devices.neopixel.Neopixel.set_pixel">set_pixel</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.theaterChaseRainbow" href="#api_server.models.devices.neopixel.Neopixel.theaterChaseRainbow">theaterChaseRainbow</a></code></li>
+<li><code><a title="api_server.models.devices.neopixel.Neopixel.wheel" href="#api_server.models.devices.neopixel.Neopixel.wheel">wheel</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

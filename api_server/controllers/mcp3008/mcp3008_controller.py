@@ -1,6 +1,4 @@
-############
-# This class reads analog input from an MCP3008 analog A/D Converter
-############
+'''This class reads analog input from an MCP3008 analog A/D Converter.'''
 
 # Importing modules
 import sys,errno

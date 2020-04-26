@@ -1,6 +1,7 @@
-############
-# This class defines XC-3738 Pressure sensor
-############
+'''This class defines XC-3738 Pressure sensor.
+It is used to read data from the XC-3738 Pressure sensor from Jaycar.
+- https://www.jaycar.com.au/thin-film-pressure-sensor-for-arduino/p/XC3738
+'''
 
 # Importing modules
 from models.sensors.sensor import Sensor

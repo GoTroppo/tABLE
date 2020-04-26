@@ -3,6 +3,10 @@ from time import sleep
 from models.sensors.sensor import Sensor
 
 class MCP3008AnalogInput(Thread):
+  '''The MCP3008AnalogInput class manages inputs for the MCP3008 Analog to Digital converter chip.
+  It will read data from the attached sensor.
+  '''
+   
   # Analog Channel ID for MCP3008
   channel_id=None
 
@@ -28,11 +32,15 @@ class MCP3008AnalogInput(Thread):
 
   # Read MCP3008 data
   def readAnalogInput(self):
+    '''Read the data in from the attached sensor device.'''
+
     adc = self.spi_dev.xfer2([1,(8+self.channel_id)<<4,0])
     data = ((adc[1]&3) << 8) + adc[2]
     return data
 
   def run(self):
+    '''Loop through regularly and read data in from attached Sensor.'''
+
     try:
       print("**** Started Monitor ****")
 

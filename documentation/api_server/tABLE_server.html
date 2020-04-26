@@ -1,0 +1,1181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>api_server.tABLE_server API documentation</title>
+<meta name="description" content="This is a python [flask server](https://pypi.org/project/Flask) that runs on a Raspberry Pi 3 and takes requests to read sensor data and set device …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>api_server.tABLE_server</code></h1>
+</header>
+<section id="section-intro">
+<p>This is a python <a href="https://pypi.org/project/Flask">flask server</a> that runs on a Raspberry Pi 3 and takes requests to read sensor data and set device states (such as a Neopixel Ring).
+It has an API to control various devices and ports.
+It uses a configuration file to define the devices connected to the Raspberry Pi.
+The configuration file path is defined in a <code>.env</code> file with the <code>DEVICE_CONFIG_FILE</code> variable.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#39;&#39;&#39;This is a python [flask server](https://pypi.org/project/Flask) that runs on a Raspberry Pi 3 and takes requests to read sensor data and set device states (such as a Neopixel Ring).
+It has an API to control various devices and ports.
+It uses a configuration file to define the devices connected to the Raspberry Pi.
+The configuration file path is defined in a `.env` file with the `DEVICE_CONFIG_FILE` variable.
+&#39;&#39;&#39;
+
+import sys,os,errno,time,yaml
+import threading,atexit
+import board
+from dotenv import load_dotenv,find_dotenv
+from flask import Flask, jsonify, abort, make_response
+from yaml.constructor import ConstructorError
+from models.sensors.sensor import Sensor
+
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
+
+from controllers.gpio.gpio_controller import GpioController
+from controllers.neopixel.neopixel_controller import NeopixelController
+from controllers.mcp3008.mcp3008_controller import Mcp3008Controller
+from models.devices.neopixel import Neopixel
+from models.sensors.xc3738_pressure_sensor import Xc3738Sensor
+from models.sensors.xc4438_microphone_sound import Xc4438Sensor
+from models.sensors.xc4524_ir_obstacle_avoidance import Xc4524Sensor
+
+# Check for a &#39;.env&#39; file to retrieve settings
+# eg &#34;export ENABLE_PRESSURE_SENSOR=1&#34;
+load_dotenv(find_dotenv())
+DEVICE_CONFIG_FILE=os.environ.get(&#34;DEVICE_CONFIG_FILE&#34;) if (os.environ.get(&#34;DEVICE_CONFIG_FILE&#34;) is not None) else None
+#DEVICE_CONFIG_FILE=None
+
+DEBUG=False
+START_SENSOR_MONITORING=True
+POOL_TIME = 5 #Seconds
+
+# lock to control access to variable
+dataLock = threading.Lock()
+# thread handler
+yourThread = None
+
+gpio_controller = None
+neopixel_controller = None
+mcp3008_controller = None
+
+controllers = []
+valid_sensor_types = {\
+&#34;Analog&#34; : [&#34;Xc3738Sensor&#34;,&#34;Xc4438Sensor&#34;], \
+&#34;Digital&#34; : [&#34;Xc4524Sensor&#34;] \
+}
+
+valid_display_devices = [&#39;neopixel&#39;]
+
+app = Flask(__name__)
+
+# Define valid routes for the server API
+@app.route(&#39;/&#39;)
+def index():
+  return &#39;Come on in and sit round the tABLE!&#39;
+
+## Handle Neopixel requests
+@app.route(&#39;/rainbow_cycle/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def do_rainbow_cycle(gpio):
+  result=neopixel_controller.do_rainbow_cycle(gpio)
+  return jsonify({&#39;rainbow_cycle&#39;: result})
+
+@app.route(&#39;/rainbow_chase/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def do_rainbow_chase(gpio):
+  result=neopixel_controller.do_rainbow_chase(gpio)
+  return jsonify({&#39;rainbow_chase&#39;: result})
+
+@app.route(&#39;/rainbow/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def do_rainbow(gpio):
+  result=neopixel_controller.do_rainbow(gpio)
+  return jsonify({&#39;rainbow&#39;: result})
+
+# Rainbow meter
+@app.route(&#39;/rainbow_meter/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def do_rainbow_meter(gpio):
+  result=neopixel_controller.do_rainbow_meter(gpio)
+  return jsonify({&#39;rainbow_meter&#39;: result})
+
+# Blank the Rainbow meter
+@app.route(&#39;/rainbow_meter_blank/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def do_rainbow_meter_blank(gpio):
+  result=neopixel_controller.do_rainbow_meter_blank(gpio)
+  return jsonify({&#39;rainbow_meter&#39;: result})
+
+# Set the brightness for all pixels
+@app.route(&#39;/brightness/&lt;int:gpio&gt;/&lt;int:brightness&gt;&#39;, methods=[&#39;GET&#39;])
+def set_pixel_strip_brightness(gpio,brightness):
+  &#39;&#39;&#39;API: **GET** `/brightness/int:gpio/int:brightness_value`
+
+  Set the Neopixel ring brightness for all pixels for specific GPIO port.
+
+  For example:
+
+  ```
+  curl -si localhost:5000/brightness/18/100
+  ```
+
+  &#39;&#39;&#39;
+
+  result=neopixel_controller.set_pixel_strip_brightness(gpio,brightness)
+  response = {&#39;brightness&#39;: brightness} if result else False
+  return jsonify(response)
+
+# set all pixels to blank
+@app.route(&#39;/clear/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def clear_neopixel(gpio):
+  result=neopixel_controller.clear_neopixel(gpio)
+  return jsonify({&#39;clear&#39;: result})
+
+@app.route(&#39;/pixel/&lt;int:gpio&gt;/&lt;int:pixel_index&gt;/&lt;string:pixel_colour&gt;&#39;, methods=[&#39;GET&#39;])
+def set_single_pixel(gpio,pixel_index,pixel_colour):
+  result=neopixel_controller.set_single_pixel(gpio,pixel_index,pixel_colour)
+  response = {&#39;pixel&#39;: {&#39;set&#39; : pixel_index}} if result else False
+  return jsonify()
+
+@app.route(&#39;/pixel/&lt;int:gpio&gt;/&lt;int:pixel_index&gt;/&lt;string:pixel_colour&gt;/&lt;int:single_only&gt;&#39;, methods=[&#39;GET&#39;])
+def set_one_or_more_pixel(gpio,pixel_index,pixel_colour,single_only):
+  result=neopixel_controller.set_one_or_more_pixel(gpio,pixel_index,pixel_colour,single_only)
+  response = {&#39;pixel&#39;: {&#39;set&#39; : pixel_index, &#39;single_only&#39; :single_only }} if result else False
+  return jsonify()
+
+@app.route(&#39;/debug_on/&lt;string:device_name&gt;/&lt;int:id&gt;&#39;)
+def set_debug_on(device_name,id):
+  if(device_name == &#39;mcp3008_input&#39;):
+    for controller in controllers:
+      if(isinstance(controller, Mcp3008Controller)):
+        for analog_input in controller.getAttachedAnalogInputsList():
+          if (analog_input is not None and analog_input.channel_id == id):
+            analog_input.DEBUG_MODE=True
+  if(device_name == &#39;gpio&#39;):
+    for controller in controllers:
+      if(isinstance(controller, GpioController)):
+        for gpio_port in controller.getAttachedPortsList():
+          if (gpio_port is not None and gpio_port.gpio_id == id):
+            gpio_port.DEBUG_MODE=True
+  return &#39;DEBUG MODE ON&#39;
+
+@app.route(&#39;/debug_off/&lt;string:device_name&gt;/&lt;int:id&gt;&#39;)
+def set_debug_off(device_name,id):
+  if(device_name == &#39;mcp3008_input&#39;):
+    for controller in controllers:
+      if(isinstance(controller, Mcp3008Controller)):
+        for analog_input in controller.getAttachedAnalogInputsList():
+          if (analog_input is not None and analog_input.channel_id == id):
+            analog_input.DEBUG_MODE=False
+  if(device_name == &#39;gpio&#39;):
+    for controller in controllers:
+      if(isinstance(controller, GpioController)):
+        for gpio_port in controller.getAttachedPortsList():
+          if (gpio_port is not None and gpio_port.gpio_id == id):
+            gpio_port.DEBUG_MODE=False     
+
+  return &#39;DEBUG MODE OFF&#39;
+
+
+##### This needs work!
+&#34;&#34;&#34;
+@app.route(&#39;/enable_pressure_sensor&#39;)
+def set_pressure_sensor_on():
+    global pressure_sensor_controller
+    msg = &#39;Pressure Sensor enabled&#39;
+    if (pressure_sensor_controller is not None):
+        pressure_sensor_controller=xc3738_sensor()
+        startSensorMonitors()
+    else:
+        msg=&#34;Pressure Sensor all ready enabled!&#34;
+    return msg
+&#34;&#34;&#34;
+
+def interrupt():
+  global yourThread
+  if (yourThread is not None):
+      yourThread.cancel()
+
+def startSensorMonitors():
+  global controllers
+
+  # Create your thread
+  print(&#34;startSensorMonitors&#34;)
+  for controller in controllers:
+    #Start Monitor for all GPIO ports
+    if(isinstance(controller, GpioController)):
+      for gpio_port in controller.getAttachedPortsList():
+        if (gpio_port is not None):
+          gpio_port.start()
+    # Start monitor for all analog inputs for MCP3008
+    if(isinstance(controller, Mcp3008Controller)):
+      for analog_input in controller.getAttachedAnalogInputsList():
+        if (analog_input is not None):
+          analog_input.start()
+
+# Reference: https://gist.github.com/pypt/94d747fe5180851196eb
+def no_duplicates_constructor(loader, node, deep=False):
+  &#34;&#34;&#34;Check for duplicate keys.&#34;&#34;&#34;
+
+  mapping = {}
+  for key_node, value_node in node.value:
+    key = loader.construct_object(key_node, deep=deep)
+    value = loader.construct_object(value_node, deep=deep)
+    if key in mapping:
+      raise ConstructorError(&#34;while constructing a mapping&#34;, node.start_mark,
+                              &#34;found duplicate key (%s)&#34; % key, key_node.start_mark)
+    mapping[key] = value
+
+  return loader.construct_mapping(node, deep)
+
+def print_config_error(msg):
+  print(&#34;Configuration File Error in &#39;{}&#39; :&#34;.format(DEVICE_CONFIG_FILE))
+  print(msg)
+  sys.exit(errno.EINTR)
+
+def validate_reactors(config,reactors_list):
+  # Check that reactors set for mcp3008 match those set up as gpio
+  if(&#39;reactors&#39; in reactors_list):
+    for rpi_connect, device_name in reactors_list[&#39;reactors&#39;].items():
+      if(rpi_connect.find(&#39;gpio&#39;) != -1):
+        # Check if GPIO number is valid
+        gpio_number=int(rpi_connect[len(&#39;gpio&#39;):])
+        if(gpio_number &lt; 1 or gpio_number &gt; 26):
+          print_config_error(&#34;Invalid GPIO number\nFound &#39;{}&#39;&#34;.format(rpi_connect))
+        # Check if neopixel set up is valid
+        if(device_name == &#39;neopixel&#39;):
+          if(rpi_connect not in config[&#39;raspberry_pi&#39;]):
+            print_config_error(&#34;Reactor for {}, is missing.&#34;.format(reactors_list))
+          if(&#39;display_device&#39; not in config[&#39;raspberry_pi&#39;][rpi_connect]):
+            print_config_error(&#34;Invalid type used for GPIO.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(rpi_connect,next(iter(config[&#39;raspberry_pi&#39;][rpi_connect]))))
+          if(device_name not in config[&#39;raspberry_pi&#39;][rpi_connect][&#39;display_device&#39;]):
+            print_config_error(&#34;Reactor for {}, missing.&#34;.format(reactors_list))
+        else:
+          print_config_error(&#34;Invalid type used for Reactor for {}&#34;.format(reactors_list))
+
+
+def validate_config():
+  global valid_sensor_types
+  global valid_display_devices
+  try:
+    assert DEVICE_CONFIG_FILE != &#34;config/config_example.yaml&#34;, &#34;Using example configuration file. Please copy this and customise the copy.&#34;
+  except yaml.YAMLError as error:
+    print_config_error(error)
+
+  with open(DEVICE_CONFIG_FILE) as f:
+    try:
+      config = yaml.load(f, Loader=yaml.FullLoader)
+    except  yaml.YAMLError as error:
+      print_config_error(error)
+
+    try:
+      assert &#34;raspberry_pi&#34; in config, &#34;No &#39;raspberry_pi&#39; item exists!&#34;
+    except AssertionError as error:
+      # Output expected AssertionErrors.
+      print_config_error(error)
+
+    spi_list = []
+    mcp3008_list = []
+
+    for pi_input, pi_input_values in config[&#39;raspberry_pi&#39;].items() :
+      # Check for SPI connected devices
+      if(pi_input.find(&#39;spi&#39;) != -1):
+        try:
+          assert pi_input == &#39;spi0&#39; or pi_input == &#39;spi1&#39;, &#34;SPI input must be &#39;spi0&#39; or &#39;spi1&#39;!\nFound SPI = &#39;{}&#39;&#34;.format(pi_input)
+        except AssertionError as error:
+          print_config_error(error)
+
+        spi_list.append(pi_input)
+
+        if(&#39;mcp3008&#39; in pi_input_values[&#39;sensors&#39;]):
+          for mcp3008_id, mcp3008_values in pi_input_values[&#39;sensors&#39;][&#39;mcp3008&#39;].items():
+            if(&#39;input_channels&#39; in mcp3008_values):
+              for mcp3008_channel_id, sensor_item in mcp3008_values[&#39;input_channels&#39;].items():
+                #print(&#34;Input Channel: &#39;{}&#39; - &#39;{}&#39;&#34;.format(mcp3008_channel_id,sensor_item))
+                #print(&#34;sensor_item Type: {}&#34;.format(type(sensor_item)))
+                if(type(sensor_item) is dict):  # If we have not defined &#39;reactors&#39; then we only get a string
+                  sensor_type = next(iter(sensor_item))
+                  # Check valid sensor types
+                  if(sensor_type not in valid_sensor_types[&#34;Analog&#34;]):
+                    print_config_error(&#34;Invalid Sensor Type - &#39;{}&#39;&#34;.format(sensor_type))
+                  #print(&#34;sensor_item {}&#34;.format(sensor_item))
+
+                  # Check that reactors set for mcp3008 match those set up as gpio
+                  if(&#39;reactors&#39; in sensor_item[sensor_type]):
+                    validate_reactors(config,sensor_item[sensor_type])
+                    
+                    &#39;&#39;&#39;
+                    for rpi_connect, device_name in sensor_item[sensor_type][&#39;reactors&#39;].items():
+                      if(rpi_connect.find(&#39;gpio&#39;) != -1):
+                        # Check if GPIO number is valid
+                        gpio_number=int(rpi_connect[len(&#39;gpio&#39;):])
+                        if(gpio_number &lt; 1 or gpio_number &gt; 26):
+                          print_config_error(&#34;Invalid GPIO number\nFound &#39;{}&#39;&#34;.format(rpi_connect))
+                        # Check if neopixel set up is valid
+                        if(device_name == &#39;neopixel&#39;):
+                          if(rpi_connect not in config[&#39;raspberry_pi&#39;]):
+                            print_config_error(&#34;Reactor for MCP3008 id {}, analog input channel {}, is missing.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(mcp3008_id,mcp3008_channel_id, rpi_connect,device_name))
+                          if(&#39;display_device&#39; not in config[&#39;raspberry_pi&#39;][rpi_connect]):
+                            print_config_error(&#34;Invalid type used for GPIO.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(rpi_connect,next(iter(config[&#39;raspberry_pi&#39;][rpi_connect]))))
+                          if(device_name not in config[&#39;raspberry_pi&#39;][rpi_connect][&#39;display_device&#39;]):
+                            print_config_error(&#34;Reactor for MCP3008 id {}, analog input channel {}, missing.\nLooking for &#39;{}&#39;:&#39;{}&#39;&#34;.format(mcp3008_id,mcp3008_channel_id, rpi_connect,device_name))
+                        else:
+                          print_config_error(&#34;Invalid type used for Reactor for MCP3008 id {}, analog input channel {}.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(mcp3008_id,mcp3008_channel_id, rpi_connect,device_name))
+                  &#39;&#39;&#39;
+
+      # Check for any Invalid GPIO pin numbers
+      #https://www.raspberrypi.org/documentation/usage/gpio/
+      if(pi_input.find(&#39;gpio&#39;) != -1):
+        gpio_number=int(pi_input[len(&#39;gpio&#39;):])
+        if(gpio_number &lt; 1 or gpio_number &gt; 26):
+          print_config_error(&#34;Invalid GPIO number\nFound &#39;{}&#39;&#34;.format(pi_input))
+        if(&#39;display_device&#39; not in pi_input_values and &#39;sensor&#39; not in pi_input_values):
+          print_config_error(&#34;Invalid type used for GPIO.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(pi_input,next(iter(pi_input_values))))
+        if(&#39;display_device&#39; in pi_input_values):
+          if(pi_input_values[&#39;display_device&#39;] not in valid_display_devices):
+            print_config_error(&#34;Invalid display_device used for GPIO.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(pi_input,pi_input_values[&#39;display_device&#39;]))
+        else:
+          if(&#39;sensor&#39; in pi_input_values):
+            if(type(pi_input_values[&#39;sensor&#39;]) is dict):  # If we have not defined &#39;reactors&#39; then we only get a string
+              sensor_type = next(iter(pi_input_values[&#39;sensor&#39;]))
+              # Check valid sensor types
+              if(sensor_type not in valid_sensor_types[&#34;Digital&#34;]):
+                print_config_error(&#34;Invalid Sensor Type - &#39;{}&#39;&#34;.format(sensor_type))
+              #print(&#34;sensor_item {}&#34;.format(sensor_item))
+
+              # Check that reactors set for gpio match those set up as gpio
+              if(&#39;reactors&#39; in pi_input_values[&#39;sensor&#39;][sensor_type]):
+                validate_reactors(config,pi_input_values[&#39;sensor&#39;][sensor_type])
+            else:
+              # Is is a valid GPIO sensor ?
+              if(pi_input_values[&#39;sensor&#39;] not in valid_sensor_types[&#34;Digital&#34;]):
+                print_config_error(&#34;Invalid Sensor type used for GPIO.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(pi_input,pi_input_values[&#39;sensor&#39;]))
+
+
+def addSensorToGpioController(sensor_type,gpio_id):
+  global gpio_controller
+  sensor_obj=None
+
+  if(sensor_type in valid_sensor_types[&#34;Digital&#34;]):
+    if(sensor_type ==&#39;Xc4524Sensor&#39;):
+      if(gpio_controller is not None):
+        gpio_number=gpio_id
+        sensor_obj=Xc4524Sensor()
+        gpio_controller.addSensor(gpio_number, sensor_obj)
+  return sensor_obj
+
+
+def load_devices_from_config():
+  global controllers,neopixel_controller,gpio_controller
+  global valid_sensor_types
+  global valid_display_devices
+
+  validate_config()
+
+  with open(DEVICE_CONFIG_FILE) as f:
+    try:
+      config = yaml.load(f, Loader=yaml.FullLoader)
+    except yaml.YAMLError as error:
+      print_config_error(error)
+    except ConstructorError as err:
+      sys.exit(errno.EINTR)
+
+    if &#34;raspberry_pi&#34; in config:
+      for pi_input, pi_input_values in config[&#39;raspberry_pi&#39;].items() :
+        # Check for SPI connected devices
+        if(pi_input.find(&#39;spi&#39;) != -1):
+          # Found the SPI connections on the Pi
+          # Find the associated sensors
+          # Loop through each of the MCP3008 and get sensors
+          if(&#39;mcp3008&#39; in pi_input_values[&#39;sensors&#39;]):
+            sensor_items=[]
+            for mcp3008_key, mcp3008_values in pi_input_values[&#39;sensors&#39;][&#39;mcp3008&#39;].items() :
+              if(&#39;input_channels&#39; in mcp3008_values):
+                sensor_items=mcp3008_values[&#39;input_channels&#39;]
+
+            if(len(sensor_items) != 0):
+              # We have items associated with MCP3008
+              # Let&#39;s create Mcp3008Controller and associated Sensors
+              #print(&#34;**** Creating Mcp3008Controller for &#34;, pi_input)
+              is_mcp_controller_exists=False
+              mcp3008_controller=None
+              for controller in controllers:
+                if(isinstance(controller, Mcp3008Controller)):
+                  if(controller.getSPI_ID == pi_input):
+                    is_mcp_controller_exists=True
+              if(not is_mcp_controller_exists):
+                mcp3008_controller=Mcp3008Controller(pi_input)
+                controllers.append(mcp3008_controller)
+
+              for mcp3008_input_id,sensor_item in sensor_items.items():
+                sensor_type = None
+                reactors=None
+                if(type(sensor_item) is dict):  # If we have not defined &#39;reactors&#39; then we only get a string
+                  sensor_type = next(iter(sensor_item))
+                else:
+                  sensor_type=sensor_item
+
+                sensor_obj=None
+                if(sensor_type in valid_sensor_types[&#34;Analog&#34;]):
+                  if(sensor_type ==&#39;Xc3738Sensor&#39;):
+                    sensor_obj = Xc3738Sensor()
+                  elif(sensor_type == &#39;Xc4438Sensor&#39;):
+                    sensor_obj = Xc4438Sensor()
+                  if(mcp3008_controller is not None and sensor_obj is not None):
+                      mcp3008_controller.addSensor(mcp3008_input_id, sensor_obj)
+                else:
+                  print_config_error(&#34;Invalid Sensor Type.\nFound &#39;{}&#39;&#34;.format(sensor_type))
+                
+                # Add in reactors to Sensors
+                if(type(sensor_item) is dict):
+                  #print(&#34;Attempting to add Reactors&#34;)
+                  #print(&#34;Sensor Item: {}&#34;.format(sensor_item))
+                  #print(&#34;Reactors: {}&#34;.format(sensor_item[sensor_type][&#39;reactors&#39;]))
+                  for gpio_id, reactor in sensor_item[sensor_type][&#39;reactors&#39;].items():
+                    if(sensor_obj is not None):
+                       # Set as None until we have created instance associated with GPIO
+                      sensor_obj.addReactor(gpio_id,None) 
+
+                  #print(&#34;Sensor instances: {}&#34;.format(Sensor.instances))
+
+        # Check for any GPIO pins with devices
+        if(pi_input.find(&#39;gpio&#39;) != -1):
+          # Check that there is only one device connected
+          if(&#39;display_device&#39; in pi_input_values):
+            display_type = pi_input_values[&#39;display_device&#39;]
+
+            if(display_type ==&#39;neopixel&#39;):
+              #print(&#34;***** Create Neopixel *****&#34;)
+              gpio_pin=int(pi_input[len(&#39;gpio&#39;):])
+              if(Neopixel.getRPiPin(gpio_pin) is not None):
+                if(neopixel_controller is None):
+                  neopixel_controller = NeopixelController()
+                neopixel_controller.addNeopixel(gpio_pin)
+
+                #Get all sensors and add to reactors if gpio matches
+                for sensor in Sensor.get_instances():
+                  for gpio in sensor.reactors:
+                    if(sensor.reactors[gpio] is None):
+                      sensor.reactors[gpio]=NeopixelController.neopixel_list[gpio_pin]
+
+          if(&#39;sensor&#39; in pi_input_values):
+            # Attaching in Sensor to GPIO Port 
+            #print(&#34;Add me in !!&#34;)
+            if(gpio_controller is None):
+              is_gpio_controller_exists=False
+              for controller in controllers:
+                if(isinstance(controller, GpioController)):
+                  is_gpio_controller_exists=True
+              if(not is_gpio_controller_exists):
+                gpio_controller = GpioController()
+                controllers.append(gpio_controller)
+
+            sensor_item = pi_input_values[&#39;sensor&#39;]
+            sensor_obj=None
+            sensor_type=None
+            reactors=None
+
+            if(type(sensor_item) is dict):  # If we have not defined &#39;reactors&#39; then we only get a string
+              sensor_type = next(iter(sensor_item))
+              sensor_obj=addSensorToGpioController(sensor_type,int(pi_input[len(&#39;gpio&#39;):]))
+
+              #Create sensor object and Add in reactors to Sensors
+              for gpio_id, reactor in sensor_item[sensor_type][&#39;reactors&#39;].items():
+                if(sensor_obj is not None):
+                    # Set as None until we have created instance associated with GPIO
+                  sensor_obj.addReactor(gpio_id,None)
+
+            else:
+              sensor_type=sensor_item
+              sensor_obj=addSensorToGpioController(sensor_type,int(pi_input[len(&#39;gpio&#39;):]))
+
+
+    # While Testing, exit gunicorn
+    if(DEBUG):
+      sys.exit(errno.EINTR)
+
+# Add in check for Duplicate Keys
+yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, no_duplicates_constructor)
+
+if(DEVICE_CONFIG_FILE is not None):
+  load_devices_from_config()
+
+# Initiate
+if(DEVICE_CONFIG_FILE is not None and START_SENSOR_MONITORING):
+    startSensorMonitors()
+    
+    # When you kill Flask (SIGTERM), clear the trigger for the next thread
+    atexit.register(interrupt)
+
+if __name__ == &#34;__main__&#34;:
+    app.run(host=&#39;127.0.0.1&#39;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="api_server.tABLE_server.addSensorToGpioController"><code class="name flex">
+<span>def <span class="ident">addSensorToGpioController</span></span>(<span>sensor_type, gpio_id)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addSensorToGpioController(sensor_type,gpio_id):
+  global gpio_controller
+  sensor_obj=None
+
+  if(sensor_type in valid_sensor_types[&#34;Digital&#34;]):
+    if(sensor_type ==&#39;Xc4524Sensor&#39;):
+      if(gpio_controller is not None):
+        gpio_number=gpio_id
+        sensor_obj=Xc4524Sensor()
+        gpio_controller.addSensor(gpio_number, sensor_obj)
+  return sensor_obj</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.clear_neopixel"><code class="name flex">
+<span>def <span class="ident">clear_neopixel</span></span>(<span>gpio)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/clear/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def clear_neopixel(gpio):
+  result=neopixel_controller.clear_neopixel(gpio)
+  return jsonify({&#39;clear&#39;: result})</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.do_rainbow"><code class="name flex">
+<span>def <span class="ident">do_rainbow</span></span>(<span>gpio)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/rainbow/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def do_rainbow(gpio):
+  result=neopixel_controller.do_rainbow(gpio)
+  return jsonify({&#39;rainbow&#39;: result})</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.do_rainbow_chase"><code class="name flex">
+<span>def <span class="ident">do_rainbow_chase</span></span>(<span>gpio)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/rainbow_chase/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def do_rainbow_chase(gpio):
+  result=neopixel_controller.do_rainbow_chase(gpio)
+  return jsonify({&#39;rainbow_chase&#39;: result})</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.do_rainbow_cycle"><code class="name flex">
+<span>def <span class="ident">do_rainbow_cycle</span></span>(<span>gpio)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/rainbow_cycle/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def do_rainbow_cycle(gpio):
+  result=neopixel_controller.do_rainbow_cycle(gpio)
+  return jsonify({&#39;rainbow_cycle&#39;: result})</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.do_rainbow_meter"><code class="name flex">
+<span>def <span class="ident">do_rainbow_meter</span></span>(<span>gpio)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/rainbow_meter/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def do_rainbow_meter(gpio):
+  result=neopixel_controller.do_rainbow_meter(gpio)
+  return jsonify({&#39;rainbow_meter&#39;: result})</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.do_rainbow_meter_blank"><code class="name flex">
+<span>def <span class="ident">do_rainbow_meter_blank</span></span>(<span>gpio)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/rainbow_meter_blank/&lt;int:gpio&gt;&#39;, methods=[&#39;GET&#39;])
+def do_rainbow_meter_blank(gpio):
+  result=neopixel_controller.do_rainbow_meter_blank(gpio)
+  return jsonify({&#39;rainbow_meter&#39;: result})</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.index"><code class="name flex">
+<span>def <span class="ident">index</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/&#39;)
+def index():
+  return &#39;Come on in and sit round the tABLE!&#39;</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.interrupt"><code class="name flex">
+<span>def <span class="ident">interrupt</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def interrupt():
+  global yourThread
+  if (yourThread is not None):
+      yourThread.cancel()</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.load_devices_from_config"><code class="name flex">
+<span>def <span class="ident">load_devices_from_config</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_devices_from_config():
+  global controllers,neopixel_controller,gpio_controller
+  global valid_sensor_types
+  global valid_display_devices
+
+  validate_config()
+
+  with open(DEVICE_CONFIG_FILE) as f:
+    try:
+      config = yaml.load(f, Loader=yaml.FullLoader)
+    except yaml.YAMLError as error:
+      print_config_error(error)
+    except ConstructorError as err:
+      sys.exit(errno.EINTR)
+
+    if &#34;raspberry_pi&#34; in config:
+      for pi_input, pi_input_values in config[&#39;raspberry_pi&#39;].items() :
+        # Check for SPI connected devices
+        if(pi_input.find(&#39;spi&#39;) != -1):
+          # Found the SPI connections on the Pi
+          # Find the associated sensors
+          # Loop through each of the MCP3008 and get sensors
+          if(&#39;mcp3008&#39; in pi_input_values[&#39;sensors&#39;]):
+            sensor_items=[]
+            for mcp3008_key, mcp3008_values in pi_input_values[&#39;sensors&#39;][&#39;mcp3008&#39;].items() :
+              if(&#39;input_channels&#39; in mcp3008_values):
+                sensor_items=mcp3008_values[&#39;input_channels&#39;]
+
+            if(len(sensor_items) != 0):
+              # We have items associated with MCP3008
+              # Let&#39;s create Mcp3008Controller and associated Sensors
+              #print(&#34;**** Creating Mcp3008Controller for &#34;, pi_input)
+              is_mcp_controller_exists=False
+              mcp3008_controller=None
+              for controller in controllers:
+                if(isinstance(controller, Mcp3008Controller)):
+                  if(controller.getSPI_ID == pi_input):
+                    is_mcp_controller_exists=True
+              if(not is_mcp_controller_exists):
+                mcp3008_controller=Mcp3008Controller(pi_input)
+                controllers.append(mcp3008_controller)
+
+              for mcp3008_input_id,sensor_item in sensor_items.items():
+                sensor_type = None
+                reactors=None
+                if(type(sensor_item) is dict):  # If we have not defined &#39;reactors&#39; then we only get a string
+                  sensor_type = next(iter(sensor_item))
+                else:
+                  sensor_type=sensor_item
+
+                sensor_obj=None
+                if(sensor_type in valid_sensor_types[&#34;Analog&#34;]):
+                  if(sensor_type ==&#39;Xc3738Sensor&#39;):
+                    sensor_obj = Xc3738Sensor()
+                  elif(sensor_type == &#39;Xc4438Sensor&#39;):
+                    sensor_obj = Xc4438Sensor()
+                  if(mcp3008_controller is not None and sensor_obj is not None):
+                      mcp3008_controller.addSensor(mcp3008_input_id, sensor_obj)
+                else:
+                  print_config_error(&#34;Invalid Sensor Type.\nFound &#39;{}&#39;&#34;.format(sensor_type))
+                
+                # Add in reactors to Sensors
+                if(type(sensor_item) is dict):
+                  #print(&#34;Attempting to add Reactors&#34;)
+                  #print(&#34;Sensor Item: {}&#34;.format(sensor_item))
+                  #print(&#34;Reactors: {}&#34;.format(sensor_item[sensor_type][&#39;reactors&#39;]))
+                  for gpio_id, reactor in sensor_item[sensor_type][&#39;reactors&#39;].items():
+                    if(sensor_obj is not None):
+                       # Set as None until we have created instance associated with GPIO
+                      sensor_obj.addReactor(gpio_id,None) 
+
+                  #print(&#34;Sensor instances: {}&#34;.format(Sensor.instances))
+
+        # Check for any GPIO pins with devices
+        if(pi_input.find(&#39;gpio&#39;) != -1):
+          # Check that there is only one device connected
+          if(&#39;display_device&#39; in pi_input_values):
+            display_type = pi_input_values[&#39;display_device&#39;]
+
+            if(display_type ==&#39;neopixel&#39;):
+              #print(&#34;***** Create Neopixel *****&#34;)
+              gpio_pin=int(pi_input[len(&#39;gpio&#39;):])
+              if(Neopixel.getRPiPin(gpio_pin) is not None):
+                if(neopixel_controller is None):
+                  neopixel_controller = NeopixelController()
+                neopixel_controller.addNeopixel(gpio_pin)
+
+                #Get all sensors and add to reactors if gpio matches
+                for sensor in Sensor.get_instances():
+                  for gpio in sensor.reactors:
+                    if(sensor.reactors[gpio] is None):
+                      sensor.reactors[gpio]=NeopixelController.neopixel_list[gpio_pin]
+
+          if(&#39;sensor&#39; in pi_input_values):
+            # Attaching in Sensor to GPIO Port 
+            #print(&#34;Add me in !!&#34;)
+            if(gpio_controller is None):
+              is_gpio_controller_exists=False
+              for controller in controllers:
+                if(isinstance(controller, GpioController)):
+                  is_gpio_controller_exists=True
+              if(not is_gpio_controller_exists):
+                gpio_controller = GpioController()
+                controllers.append(gpio_controller)
+
+            sensor_item = pi_input_values[&#39;sensor&#39;]
+            sensor_obj=None
+            sensor_type=None
+            reactors=None
+
+            if(type(sensor_item) is dict):  # If we have not defined &#39;reactors&#39; then we only get a string
+              sensor_type = next(iter(sensor_item))
+              sensor_obj=addSensorToGpioController(sensor_type,int(pi_input[len(&#39;gpio&#39;):]))
+
+              #Create sensor object and Add in reactors to Sensors
+              for gpio_id, reactor in sensor_item[sensor_type][&#39;reactors&#39;].items():
+                if(sensor_obj is not None):
+                    # Set as None until we have created instance associated with GPIO
+                  sensor_obj.addReactor(gpio_id,None)
+
+            else:
+              sensor_type=sensor_item
+              sensor_obj=addSensorToGpioController(sensor_type,int(pi_input[len(&#39;gpio&#39;):]))
+
+
+    # While Testing, exit gunicorn
+    if(DEBUG):
+      sys.exit(errno.EINTR)</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.no_duplicates_constructor"><code class="name flex">
+<span>def <span class="ident">no_duplicates_constructor</span></span>(<span>loader, node, deep=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check for duplicate keys.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def no_duplicates_constructor(loader, node, deep=False):
+  &#34;&#34;&#34;Check for duplicate keys.&#34;&#34;&#34;
+
+  mapping = {}
+  for key_node, value_node in node.value:
+    key = loader.construct_object(key_node, deep=deep)
+    value = loader.construct_object(value_node, deep=deep)
+    if key in mapping:
+      raise ConstructorError(&#34;while constructing a mapping&#34;, node.start_mark,
+                              &#34;found duplicate key (%s)&#34; % key, key_node.start_mark)
+    mapping[key] = value
+
+  return loader.construct_mapping(node, deep)</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.print_config_error"><code class="name flex">
+<span>def <span class="ident">print_config_error</span></span>(<span>msg)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print_config_error(msg):
+  print(&#34;Configuration File Error in &#39;{}&#39; :&#34;.format(DEVICE_CONFIG_FILE))
+  print(msg)
+  sys.exit(errno.EINTR)</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.set_debug_off"><code class="name flex">
+<span>def <span class="ident">set_debug_off</span></span>(<span>device_name, id)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/debug_off/&lt;string:device_name&gt;/&lt;int:id&gt;&#39;)
+def set_debug_off(device_name,id):
+  if(device_name == &#39;mcp3008_input&#39;):
+    for controller in controllers:
+      if(isinstance(controller, Mcp3008Controller)):
+        for analog_input in controller.getAttachedAnalogInputsList():
+          if (analog_input is not None and analog_input.channel_id == id):
+            analog_input.DEBUG_MODE=False
+  if(device_name == &#39;gpio&#39;):
+    for controller in controllers:
+      if(isinstance(controller, GpioController)):
+        for gpio_port in controller.getAttachedPortsList():
+          if (gpio_port is not None and gpio_port.gpio_id == id):
+            gpio_port.DEBUG_MODE=False     
+
+  return &#39;DEBUG MODE OFF&#39;</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.set_debug_on"><code class="name flex">
+<span>def <span class="ident">set_debug_on</span></span>(<span>device_name, id)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/debug_on/&lt;string:device_name&gt;/&lt;int:id&gt;&#39;)
+def set_debug_on(device_name,id):
+  if(device_name == &#39;mcp3008_input&#39;):
+    for controller in controllers:
+      if(isinstance(controller, Mcp3008Controller)):
+        for analog_input in controller.getAttachedAnalogInputsList():
+          if (analog_input is not None and analog_input.channel_id == id):
+            analog_input.DEBUG_MODE=True
+  if(device_name == &#39;gpio&#39;):
+    for controller in controllers:
+      if(isinstance(controller, GpioController)):
+        for gpio_port in controller.getAttachedPortsList():
+          if (gpio_port is not None and gpio_port.gpio_id == id):
+            gpio_port.DEBUG_MODE=True
+  return &#39;DEBUG MODE ON&#39;</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.set_one_or_more_pixel"><code class="name flex">
+<span>def <span class="ident">set_one_or_more_pixel</span></span>(<span>gpio, pixel_index, pixel_colour, single_only)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/pixel/&lt;int:gpio&gt;/&lt;int:pixel_index&gt;/&lt;string:pixel_colour&gt;/&lt;int:single_only&gt;&#39;, methods=[&#39;GET&#39;])
+def set_one_or_more_pixel(gpio,pixel_index,pixel_colour,single_only):
+  result=neopixel_controller.set_one_or_more_pixel(gpio,pixel_index,pixel_colour,single_only)
+  response = {&#39;pixel&#39;: {&#39;set&#39; : pixel_index, &#39;single_only&#39; :single_only }} if result else False
+  return jsonify()</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.set_pixel_strip_brightness"><code class="name flex">
+<span>def <span class="ident">set_pixel_strip_brightness</span></span>(<span>gpio, brightness)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>API: <strong>GET</strong> <code>/brightness/int:gpio/int:brightness_value</code></p>
+<p>Set the Neopixel ring brightness for all pixels for specific GPIO port.</p>
+<p>For example:</p>
+<pre><code>curl -si localhost:5000/brightness/18/100
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/brightness/&lt;int:gpio&gt;/&lt;int:brightness&gt;&#39;, methods=[&#39;GET&#39;])
+def set_pixel_strip_brightness(gpio,brightness):
+  &#39;&#39;&#39;API: **GET** `/brightness/int:gpio/int:brightness_value`
+
+  Set the Neopixel ring brightness for all pixels for specific GPIO port.
+
+  For example:
+
+  ```
+  curl -si localhost:5000/brightness/18/100
+  ```
+
+  &#39;&#39;&#39;
+
+  result=neopixel_controller.set_pixel_strip_brightness(gpio,brightness)
+  response = {&#39;brightness&#39;: brightness} if result else False
+  return jsonify(response)</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.set_single_pixel"><code class="name flex">
+<span>def <span class="ident">set_single_pixel</span></span>(<span>gpio, pixel_index, pixel_colour)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@app.route(&#39;/pixel/&lt;int:gpio&gt;/&lt;int:pixel_index&gt;/&lt;string:pixel_colour&gt;&#39;, methods=[&#39;GET&#39;])
+def set_single_pixel(gpio,pixel_index,pixel_colour):
+  result=neopixel_controller.set_single_pixel(gpio,pixel_index,pixel_colour)
+  response = {&#39;pixel&#39;: {&#39;set&#39; : pixel_index}} if result else False
+  return jsonify()</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.startSensorMonitors"><code class="name flex">
+<span>def <span class="ident">startSensorMonitors</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def startSensorMonitors():
+  global controllers
+
+  # Create your thread
+  print(&#34;startSensorMonitors&#34;)
+  for controller in controllers:
+    #Start Monitor for all GPIO ports
+    if(isinstance(controller, GpioController)):
+      for gpio_port in controller.getAttachedPortsList():
+        if (gpio_port is not None):
+          gpio_port.start()
+    # Start monitor for all analog inputs for MCP3008
+    if(isinstance(controller, Mcp3008Controller)):
+      for analog_input in controller.getAttachedAnalogInputsList():
+        if (analog_input is not None):
+          analog_input.start()</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.validate_config"><code class="name flex">
+<span>def <span class="ident">validate_config</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_config():
+  global valid_sensor_types
+  global valid_display_devices
+  try:
+    assert DEVICE_CONFIG_FILE != &#34;config/config_example.yaml&#34;, &#34;Using example configuration file. Please copy this and customise the copy.&#34;
+  except yaml.YAMLError as error:
+    print_config_error(error)
+
+  with open(DEVICE_CONFIG_FILE) as f:
+    try:
+      config = yaml.load(f, Loader=yaml.FullLoader)
+    except  yaml.YAMLError as error:
+      print_config_error(error)
+
+    try:
+      assert &#34;raspberry_pi&#34; in config, &#34;No &#39;raspberry_pi&#39; item exists!&#34;
+    except AssertionError as error:
+      # Output expected AssertionErrors.
+      print_config_error(error)
+
+    spi_list = []
+    mcp3008_list = []
+
+    for pi_input, pi_input_values in config[&#39;raspberry_pi&#39;].items() :
+      # Check for SPI connected devices
+      if(pi_input.find(&#39;spi&#39;) != -1):
+        try:
+          assert pi_input == &#39;spi0&#39; or pi_input == &#39;spi1&#39;, &#34;SPI input must be &#39;spi0&#39; or &#39;spi1&#39;!\nFound SPI = &#39;{}&#39;&#34;.format(pi_input)
+        except AssertionError as error:
+          print_config_error(error)
+
+        spi_list.append(pi_input)
+
+        if(&#39;mcp3008&#39; in pi_input_values[&#39;sensors&#39;]):
+          for mcp3008_id, mcp3008_values in pi_input_values[&#39;sensors&#39;][&#39;mcp3008&#39;].items():
+            if(&#39;input_channels&#39; in mcp3008_values):
+              for mcp3008_channel_id, sensor_item in mcp3008_values[&#39;input_channels&#39;].items():
+                #print(&#34;Input Channel: &#39;{}&#39; - &#39;{}&#39;&#34;.format(mcp3008_channel_id,sensor_item))
+                #print(&#34;sensor_item Type: {}&#34;.format(type(sensor_item)))
+                if(type(sensor_item) is dict):  # If we have not defined &#39;reactors&#39; then we only get a string
+                  sensor_type = next(iter(sensor_item))
+                  # Check valid sensor types
+                  if(sensor_type not in valid_sensor_types[&#34;Analog&#34;]):
+                    print_config_error(&#34;Invalid Sensor Type - &#39;{}&#39;&#34;.format(sensor_type))
+                  #print(&#34;sensor_item {}&#34;.format(sensor_item))
+
+                  # Check that reactors set for mcp3008 match those set up as gpio
+                  if(&#39;reactors&#39; in sensor_item[sensor_type]):
+                    validate_reactors(config,sensor_item[sensor_type])
+                    
+                    &#39;&#39;&#39;
+                    for rpi_connect, device_name in sensor_item[sensor_type][&#39;reactors&#39;].items():
+                      if(rpi_connect.find(&#39;gpio&#39;) != -1):
+                        # Check if GPIO number is valid
+                        gpio_number=int(rpi_connect[len(&#39;gpio&#39;):])
+                        if(gpio_number &lt; 1 or gpio_number &gt; 26):
+                          print_config_error(&#34;Invalid GPIO number\nFound &#39;{}&#39;&#34;.format(rpi_connect))
+                        # Check if neopixel set up is valid
+                        if(device_name == &#39;neopixel&#39;):
+                          if(rpi_connect not in config[&#39;raspberry_pi&#39;]):
+                            print_config_error(&#34;Reactor for MCP3008 id {}, analog input channel {}, is missing.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(mcp3008_id,mcp3008_channel_id, rpi_connect,device_name))
+                          if(&#39;display_device&#39; not in config[&#39;raspberry_pi&#39;][rpi_connect]):
+                            print_config_error(&#34;Invalid type used for GPIO.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(rpi_connect,next(iter(config[&#39;raspberry_pi&#39;][rpi_connect]))))
+                          if(device_name not in config[&#39;raspberry_pi&#39;][rpi_connect][&#39;display_device&#39;]):
+                            print_config_error(&#34;Reactor for MCP3008 id {}, analog input channel {}, missing.\nLooking for &#39;{}&#39;:&#39;{}&#39;&#34;.format(mcp3008_id,mcp3008_channel_id, rpi_connect,device_name))
+                        else:
+                          print_config_error(&#34;Invalid type used for Reactor for MCP3008 id {}, analog input channel {}.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(mcp3008_id,mcp3008_channel_id, rpi_connect,device_name))
+                  &#39;&#39;&#39;
+
+      # Check for any Invalid GPIO pin numbers
+      #https://www.raspberrypi.org/documentation/usage/gpio/
+      if(pi_input.find(&#39;gpio&#39;) != -1):
+        gpio_number=int(pi_input[len(&#39;gpio&#39;):])
+        if(gpio_number &lt; 1 or gpio_number &gt; 26):
+          print_config_error(&#34;Invalid GPIO number\nFound &#39;{}&#39;&#34;.format(pi_input))
+        if(&#39;display_device&#39; not in pi_input_values and &#39;sensor&#39; not in pi_input_values):
+          print_config_error(&#34;Invalid type used for GPIO.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(pi_input,next(iter(pi_input_values))))
+        if(&#39;display_device&#39; in pi_input_values):
+          if(pi_input_values[&#39;display_device&#39;] not in valid_display_devices):
+            print_config_error(&#34;Invalid display_device used for GPIO.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(pi_input,pi_input_values[&#39;display_device&#39;]))
+        else:
+          if(&#39;sensor&#39; in pi_input_values):
+            if(type(pi_input_values[&#39;sensor&#39;]) is dict):  # If we have not defined &#39;reactors&#39; then we only get a string
+              sensor_type = next(iter(pi_input_values[&#39;sensor&#39;]))
+              # Check valid sensor types
+              if(sensor_type not in valid_sensor_types[&#34;Digital&#34;]):
+                print_config_error(&#34;Invalid Sensor Type - &#39;{}&#39;&#34;.format(sensor_type))
+              #print(&#34;sensor_item {}&#34;.format(sensor_item))
+
+              # Check that reactors set for gpio match those set up as gpio
+              if(&#39;reactors&#39; in pi_input_values[&#39;sensor&#39;][sensor_type]):
+                validate_reactors(config,pi_input_values[&#39;sensor&#39;][sensor_type])
+            else:
+              # Is is a valid GPIO sensor ?
+              if(pi_input_values[&#39;sensor&#39;] not in valid_sensor_types[&#34;Digital&#34;]):
+                print_config_error(&#34;Invalid Sensor type used for GPIO.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(pi_input,pi_input_values[&#39;sensor&#39;]))</code></pre>
+</details>
+</dd>
+<dt id="api_server.tABLE_server.validate_reactors"><code class="name flex">
+<span>def <span class="ident">validate_reactors</span></span>(<span>config, reactors_list)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_reactors(config,reactors_list):
+  # Check that reactors set for mcp3008 match those set up as gpio
+  if(&#39;reactors&#39; in reactors_list):
+    for rpi_connect, device_name in reactors_list[&#39;reactors&#39;].items():
+      if(rpi_connect.find(&#39;gpio&#39;) != -1):
+        # Check if GPIO number is valid
+        gpio_number=int(rpi_connect[len(&#39;gpio&#39;):])
+        if(gpio_number &lt; 1 or gpio_number &gt; 26):
+          print_config_error(&#34;Invalid GPIO number\nFound &#39;{}&#39;&#34;.format(rpi_connect))
+        # Check if neopixel set up is valid
+        if(device_name == &#39;neopixel&#39;):
+          if(rpi_connect not in config[&#39;raspberry_pi&#39;]):
+            print_config_error(&#34;Reactor for {}, is missing.&#34;.format(reactors_list))
+          if(&#39;display_device&#39; not in config[&#39;raspberry_pi&#39;][rpi_connect]):
+            print_config_error(&#34;Invalid type used for GPIO.\nFound &#39;{}&#39;:&#39;{}&#39;&#34;.format(rpi_connect,next(iter(config[&#39;raspberry_pi&#39;][rpi_connect]))))
+          if(device_name not in config[&#39;raspberry_pi&#39;][rpi_connect][&#39;display_device&#39;]):
+            print_config_error(&#34;Reactor for {}, missing.&#34;.format(reactors_list))
+        else:
+          print_config_error(&#34;Invalid type used for Reactor for {}&#34;.format(reactors_list))</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="api_server" href="index.html">api_server</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="api_server.tABLE_server.addSensorToGpioController" href="#api_server.tABLE_server.addSensorToGpioController">addSensorToGpioController</a></code></li>
+<li><code><a title="api_server.tABLE_server.clear_neopixel" href="#api_server.tABLE_server.clear_neopixel">clear_neopixel</a></code></li>
+<li><code><a title="api_server.tABLE_server.do_rainbow" href="#api_server.tABLE_server.do_rainbow">do_rainbow</a></code></li>
+<li><code><a title="api_server.tABLE_server.do_rainbow_chase" href="#api_server.tABLE_server.do_rainbow_chase">do_rainbow_chase</a></code></li>
+<li><code><a title="api_server.tABLE_server.do_rainbow_cycle" href="#api_server.tABLE_server.do_rainbow_cycle">do_rainbow_cycle</a></code></li>
+<li><code><a title="api_server.tABLE_server.do_rainbow_meter" href="#api_server.tABLE_server.do_rainbow_meter">do_rainbow_meter</a></code></li>
+<li><code><a title="api_server.tABLE_server.do_rainbow_meter_blank" href="#api_server.tABLE_server.do_rainbow_meter_blank">do_rainbow_meter_blank</a></code></li>
+<li><code><a title="api_server.tABLE_server.index" href="#api_server.tABLE_server.index">index</a></code></li>
+<li><code><a title="api_server.tABLE_server.interrupt" href="#api_server.tABLE_server.interrupt">interrupt</a></code></li>
+<li><code><a title="api_server.tABLE_server.load_devices_from_config" href="#api_server.tABLE_server.load_devices_from_config">load_devices_from_config</a></code></li>
+<li><code><a title="api_server.tABLE_server.no_duplicates_constructor" href="#api_server.tABLE_server.no_duplicates_constructor">no_duplicates_constructor</a></code></li>
+<li><code><a title="api_server.tABLE_server.print_config_error" href="#api_server.tABLE_server.print_config_error">print_config_error</a></code></li>
+<li><code><a title="api_server.tABLE_server.set_debug_off" href="#api_server.tABLE_server.set_debug_off">set_debug_off</a></code></li>
+<li><code><a title="api_server.tABLE_server.set_debug_on" href="#api_server.tABLE_server.set_debug_on">set_debug_on</a></code></li>
+<li><code><a title="api_server.tABLE_server.set_one_or_more_pixel" href="#api_server.tABLE_server.set_one_or_more_pixel">set_one_or_more_pixel</a></code></li>
+<li><code><a title="api_server.tABLE_server.set_pixel_strip_brightness" href="#api_server.tABLE_server.set_pixel_strip_brightness">set_pixel_strip_brightness</a></code></li>
+<li><code><a title="api_server.tABLE_server.set_single_pixel" href="#api_server.tABLE_server.set_single_pixel">set_single_pixel</a></code></li>
+<li><code><a title="api_server.tABLE_server.startSensorMonitors" href="#api_server.tABLE_server.startSensorMonitors">startSensorMonitors</a></code></li>
+<li><code><a title="api_server.tABLE_server.validate_config" href="#api_server.tABLE_server.validate_config">validate_config</a></code></li>
+<li><code><a title="api_server.tABLE_server.validate_reactors" href="#api_server.tABLE_server.validate_reactors">validate_reactors</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
