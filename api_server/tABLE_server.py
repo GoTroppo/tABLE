@@ -5,11 +5,8 @@ It uses a configuration file to define the devices connected to the Raspberry Pi
 The configuration file path is defined in a `.env` file with the `DEVICE_CONFIG_FILE` variable.
 '''
 
-
-
 import sys,os,errno,time,yaml
 import threading,atexit
-#import board
 from dotenv import load_dotenv,find_dotenv
 from flask import Flask, jsonify, abort, make_response
 from yaml.constructor import ConstructorError
