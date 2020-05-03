@@ -1,6 +1,6 @@
 # Class to communicate with Neopixel
 import time
-import board
+#import board
 import neopixel # https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel
 from rpi_ws281x import *
 
@@ -10,7 +10,7 @@ class Neopixel:
 
   # Choose an open pin connected to the Data In of the NeoPixel strip, i.e. board.D18
   # NeoPixels must be connected to D10, D12, D18 or D21 to work.
-  PIXEL_PIN = board.D18     # GPIO pin connected to the pixels (must support PWM!).
+  PIXEL_PIN = None     # GPIO pin connected to the pixels (must support PWM!).
                             # Type: adafruit_blinka.microcontroller.bcm283x.pin.Pin
 
   LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
@@ -29,7 +29,8 @@ class Neopixel:
   ORDER = neopixel.GRB
 
   # Create NeoPixel object with appropriate configuration.
-  pixel_strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL_PIN.id, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+  #pixel_strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL_PIN.id, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+  pixel_strip = None
 
   def __init__(self,RPi_GPIO): # RPi_GPIO Type: adafruit_blinka.microcontroller.bcm283x.pin.Pin
     self.PIXEL_PIN = RPi_GPIO
