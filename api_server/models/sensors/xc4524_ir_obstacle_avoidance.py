@@ -1,6 +1,6 @@
 # Importing modules
 from . sensor import Sensor
-from . models.devices.neopixel import Neopixel
+from models.devices.neopixel import Neopixel
 
 #### Define class ####
 class Xc4524Sensor(Sensor):
