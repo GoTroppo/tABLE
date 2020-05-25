@@ -103,6 +103,7 @@ class NeopixelController:
                 return True
             return False
 
+    @staticmethod
     def isRpiGpioValid(RPi_GPIO:int):
         return RPi_GPIO > 0 and RPi_GPIO < 27
 
