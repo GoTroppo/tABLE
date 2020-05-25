@@ -46,57 +46,70 @@ def index():
   return 'Come on in and sit round the tABLE!'
 
 ## Handle Neopixel requests
-@app.route('/rainbow_cycle/<int:gpio>', methods=['GET'])
+@app.route('/neopixel/<int:gpio>/rainbow_cycle', methods=['GET'])
 def do_rainbow_cycle(gpio):
-  result=neopixel_controller.do_rainbow_cycle(gpio)
-  return jsonify({'rainbow_cycle': result})
+    result=neopixel_controller.do_rainbow_cycle(gpio)
+    return jsonify({'rainbow_cycle': result})
 
-@app.route('/rainbow_chase/<int:gpio>', methods=['GET'])
+@app.route('/neopixel/<int:gpio>/rainbow_chase', methods=['GET'])
 def do_rainbow_chase(gpio):
-  result=neopixel_controller.do_rainbow_chase(gpio)
-  return jsonify({'rainbow_chase': result})
+    result=neopixel_controller.do_rainbow_chase(gpio)
+    return jsonify({'rainbow_chase': result})
 
-@app.route('/rainbow/<int:gpio>', methods=['GET'])
+@app.route('/neopixel/<int:gpio>/rainbow', methods=['GET'])
 def do_rainbow(gpio):
-  result=neopixel_controller.do_rainbow(gpio)
-  return jsonify({'rainbow': result})
+    print("Running neopixel rainbow using {}".format(neopixel_controller))
+    result=neopixel_controller.do_rainbow(gpio)
+    return jsonify({'rainbow': result})
 
 # Rainbow meter
-@app.route('/rainbow_meter/<int:gpio>', methods=['GET'])
-def do_rainbow_meter(gpio):
-  result=neopixel_controller.do_rainbow_meter(gpio)
-  return jsonify({'rainbow_meter': result})
+@app.route('/neopixel/<int:gpio>/rainbow_meter/<int:meter_level>', methods=['GET'])
+def do_rainbow_meter(gpio,meter_level):
+    result=neopixel_controller.do_rainbow_meter(gpio,meter_level)
+    return jsonify({'rainbow_meter': result})
 
 # Blank the Rainbow meter
-@app.route('/rainbow_meter_blank/<int:gpio>', methods=['GET'])
-def do_rainbow_meter_blank(gpio):
-  result=neopixel_controller.do_rainbow_meter_blank(gpio)
-  return jsonify({'rainbow_meter': result})
+@app.route('/neopixel/<int:gpio>/rainbow_meter_blank/<int:meter_level>', methods=['GET'])
+def do_rainbow_meter_blank(gpio,meter_level):
+    result=neopixel_controller.do_rainbow_meter_blank(gpio,meter_level)
+    return jsonify({'rainbow_meter': result})
 
 # Set the brightness for all pixels
-@app.route('/brightness/<int:gpio>/<int:brightness>', methods=['GET'])
+@app.route('/neopixel/<int:gpio>/brightness/<int:brightness>', methods=['GET'])
 def set_pixel_strip_brightness(gpio,brightness):
-  result=neopixel_controller.set_pixel_strip_brightness(gpio,brightness)
-  response = {'brightness': brightness} if result else False
-  return jsonify(response)
+    '''API: **GET** `/brightness/int:gpio/int:brightness_value`
+
+    Set the Neopixel ring brightness for all pixels for specific GPIO port.
+    Valid values for brightness are 0-255
+    For example:
+
+    ```
+    curl -si localhost:5000/brightness/18/100
+    ```
+
+    '''
+
+    result=neopixel_controller.set_pixel_strip_brightness(gpio,brightness)
+    response = {'brightness': brightness} if result else False
+    return jsonify(response)
 
 # set all pixels to blank
-@app.route('/clear/<int:gpio>', methods=['GET'])
+@app.route('/neopixel/<int:gpio>/clear', methods=['GET'])
 def clear_neopixel(gpio):
-  result=neopixel_controller.clear_neopixel(gpio)
-  return jsonify({'clear': result})
+    result=neopixel_controller.clear_neopixel(gpio)
+    return jsonify({'clear': result})
 
-@app.route('/pixel/<int:gpio>/<int:pixel_index>/<string:pixel_colour>', methods=['GET'])
+@app.route('/neopixel/<int:gpio>/pixel/<int:pixel_index>/<string:pixel_colour>', methods=['GET'])
 def set_single_pixel(gpio,pixel_index,pixel_colour):
-  result=neopixel_controller.set_single_pixel(gpio,pixel_index,pixel_colour)
-  response = {'pixel': {'set' : pixel_index}} if result else False
-  return jsonify()
+    result=neopixel_controller.set_single_pixel(gpio,pixel_index,pixel_colour)
+    response = {'pixel': {'set' : pixel_index}} if result else False
+    return jsonify(response)
 
-@app.route('/pixel/<int:gpio>/<int:pixel_index>/<string:pixel_colour>/<int:single_only>', methods=['GET'])
+@app.route('/neopixel/<int:gpio>/pixel/<int:pixel_index>/<string:pixel_colour>/<int:single_only>', methods=['GET'])
 def set_one_or_more_pixel(gpio,pixel_index,pixel_colour,single_only):
-  result=neopixel_controller.set_one_or_more_pixel(gpio,pixel_index,pixel_colour,single_only)
-  response = {'pixel': {'set' : pixel_index, 'single_only' :single_only }} if result else False
-  return jsonify()
+    result=neopixel_controller.set_one_or_more_pixel(gpio,pixel_index,pixel_colour,single_only)
+    response = {'pixel': {'set' : pixel_index, 'single_only' :single_only }} if result else False
+    return jsonify(response)
 
 @app.route('/debug_on/<string:device_name>/<int:id>')
 def set_debug_on(device_name,id):

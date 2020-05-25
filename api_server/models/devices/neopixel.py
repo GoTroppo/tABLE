@@ -1,6 +1,8 @@
 # Class to communicate with Neopixel
-import time
+import sys,errno,time
 import board
+print(board.__file__)
+
 import neopixel # https://github.com/adafruit/Adafruit_CircuitPython_NeoPixel
 from rpi_ws281x import *
 
@@ -29,12 +31,21 @@ class Neopixel:
   ORDER = neopixel.GRB
 
   # Create NeoPixel object with appropriate configuration.
-  pixel_strip = Adafruit_NeoPixel(NUM_PIXELS, PIXEL_PIN.id, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
-
+  pixel_strip = None 
+  
   def __init__(self,RPi_GPIO): # RPi_GPIO Type: adafruit_blinka.microcontroller.bcm283x.pin.Pin
+    try:
+      assert Neopixel.getRPiPin(RPi_GPIO) is not None, "Incorrect Neopixel Pin"
+    except AssertionError as error:
+      print("Error in Neopixel.__init__() : Incorrect Pin error - attempted to use GPIO '{}' for Neopixel".format(RPi_GPIO))
+      sys.exit(errno.EINTR)
+
+
     self.PIXEL_PIN = RPi_GPIO
+#    self.pixel_strip = Adafruit_NeoPixel(self.NUM_PIXELS, board.D18, self.LED_FREQ_HZ, self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS)
     self.pixel_strip = Adafruit_NeoPixel(self.NUM_PIXELS, self.PIXEL_PIN.id, self.LED_FREQ_HZ, self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS)
     self.pixel_strip.begin()
+    print ("Neopixel.__init__ {}".format(self.pixel_strip))
 
   # Set specific pixel to colour
   # pixel_colour is a hexadecimal number
@@ -69,6 +80,7 @@ class Neopixel:
 
   #Draw rainbow that fades across all pixels at once.
   def rainbow(self,num_pixels=None,wait_ms=20,iterations=1):
+    print("Neopixel rainbow {} pixel_strip {}".format(self,self.pixel_strip))
     if(num_pixels is None):
       num_pixels=self.pixel_strip.numPixels()
     for j in range(256*iterations):
@@ -76,6 +88,8 @@ class Neopixel:
         self.pixel_strip.setPixelColor(i, self.wheel((i+j) & 255))
       self.pixel_strip.show()
       time.sleep(wait_ms/1000.0)
+
+    print("Neopixel rainbow DONE")
 
   #Draw rainbow that fades across all pixels at once.
   def rainbow_meter(self,num_pixels=None,blank_pixels=False,wait_ms=20):
@@ -96,11 +110,17 @@ class Neopixel:
           
   #Draw rainbow that uniformly distributes itself across all pixels.
   def rainbowCycle(self,wait_ms=20, iterations=5):
+    print("Running Neopixel rainbowCycle {} pixel_strip {}".format(self,self.pixel_strip))
+
     for j in range(256*iterations):
       for i in range(self.pixel_strip.numPixels()):
         self.pixel_strip.setPixelColor(i, self.wheel((int(i * 256 / self.pixel_strip.numPixels()) + j) & 255))
       self.pixel_strip.show()
       time.sleep(wait_ms/1000.0)
+
+    print("DONE Neopixel rainbowCycle {} pixel_strip {}".format(self,self.pixel_strip))
+
+    
 
   #Rainbow movie theater light style chaser animation.
   def theaterChaseRainbow(self,wait_ms=50, chase_range=256):
