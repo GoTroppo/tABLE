@@ -1,6 +1,6 @@
-############
-# This class reads analog input from an MCP3008 analog A/D Converter
-############
+'''
+This class reads analog input from an MCP3008 analog A/D Converter
+'''
 
 # Importing modules
 import sys,errno
@@ -40,7 +40,14 @@ class Mcp3008Controller:
   def addSensor(self,analog_input_channel,sensor:Sensor):
     input = MCP3008AnalogInput(self.spi,analog_input_channel,sensor)
     self.attached_sensors[input]=sensor
-  #  print("addSensor")
+    print("***** Mcp3008Controller addSensor {}".format(id(input)))
+
+  def getInput(self,analog_input_channel):
+    for input,sensor in self.attached_sensors.items():
+      if(input.getChannel() == analog_input_channel):
+        return input
+      
+    return None          
 
   def getSensorList(self):
     sensor_list=[]
@@ -56,6 +63,6 @@ class Mcp3008Controller:
 
     return analog_list
 
-  def getSPI_ID():
+  def getSPI_ID(self):
     return self.spi_input_id
 

@@ -34,7 +34,7 @@ class NeopixelController:
 
         if (RPi_GPIO not in NeopixelController.neopixel_list):
             NeopixelController.neopixel_list[RPi_GPIO] = Neopixel(Neopixel.getRPiPin(RPi_GPIO))
-            print("***** Created Neopixel for GPIO {}".format(RPi_GPIO))
+            print("***** addNeopixel() Created Neopixel for GPIO {}".format(RPi_GPIO))
             return NeopixelController.neopixel_list[RPi_GPIO]
 
         print("Neopixel exists for GPIO {}".format(RPi_GPIO))
