@@ -14,7 +14,6 @@ class NeopixelController:
         """ Static access method. """
         if NeopixelController.__instance == None:
             NeopixelController()
-            print("***** Created NeopixelController *****")
         return NeopixelController.__instance
 
     def __init__(self):
@@ -22,7 +21,7 @@ class NeopixelController:
             raise Exception("This class is a singleton!")
         else:
             NeopixelController.__instance = self
-            print("***** Created NeopixelController NeopixelController.__instance *****")
+            print("***** Created NeopixelController() *****")
 
 
     def addNeopixel(self,RPi_GPIO:int):
@@ -34,7 +33,6 @@ class NeopixelController:
 
         if (RPi_GPIO not in NeopixelController.neopixel_list):
             NeopixelController.neopixel_list[RPi_GPIO] = Neopixel(Neopixel.getRPiPin(RPi_GPIO))
-            print("***** addNeopixel() Created Neopixel for GPIO {}".format(RPi_GPIO))
             return NeopixelController.neopixel_list[RPi_GPIO]
 
         print("Neopixel exists for GPIO {}".format(RPi_GPIO))
@@ -58,9 +56,9 @@ class NeopixelController:
         return False
 
     def do_rainbow(self,RPi_GPIO):
-        print("NeopixelController do_rainbow {}".format(RPi_GPIO))
+        #print("NeopixelController do_rainbow {}".format(RPi_GPIO))
         if(NeopixelController.isRpiGpioValid(RPi_GPIO) and RPi_GPIO in self.neopixel_list):
-            print("NeopixelController do_rainbow running {}".format(self.neopixel_list[RPi_GPIO]))
+            #print("NeopixelController do_rainbow running {}".format(self.neopixel_list[RPi_GPIO]))
             self.neopixel_list[RPi_GPIO].rainbow()
             self.neopixel_list[RPi_GPIO].blank_neopixel()
             return True

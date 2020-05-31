@@ -36,7 +36,7 @@ class MCP3008AnalogInput(PortMonitor):
     self.channel_id=channel_id
     self.attached_sensor=sensor
     self.TIME_TO_SLEEP = sleep
-    print("**** Created  MCP3008AnalogInput Name {} ****".format(self.name))
+    #print("**** Created  MCP3008AnalogInput Name {} ****".format(self.name))
 
   def getChannel(self):
     return self.channel_id
@@ -53,7 +53,7 @@ class MCP3008AnalogInput(PortMonitor):
     '''Loop through regularly and read data in from attached Sensor.'''
 
     try:
-      print("**** Started MCP3008AnalogInput {} ****".format(self))
+      #print("**** Started MCP3008AnalogInput {} ****".format(self))
 
       while True:
         if (self.stop_monitor):

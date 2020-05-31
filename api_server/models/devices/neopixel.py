@@ -45,7 +45,7 @@ class Neopixel:
 #    self.pixel_strip = Adafruit_NeoPixel(self.NUM_PIXELS, board.D18, self.LED_FREQ_HZ, self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS)
     self.pixel_strip = Adafruit_NeoPixel(self.NUM_PIXELS, self.PIXEL_PIN.id, self.LED_FREQ_HZ, self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS)
     self.pixel_strip.begin()
-    print ("Neopixel.__init__ {}".format(self.pixel_strip))
+    #print ("Neopixel.__init__ {}".format(self.pixel_strip))
 
   # Set specific pixel to colour
   # pixel_colour is a hexadecimal number
@@ -80,7 +80,7 @@ class Neopixel:
 
   #Draw rainbow that fades across all pixels at once.
   def rainbow(self,num_pixels=None,wait_ms=20,iterations=1):
-    print("Neopixel rainbow {} pixel_strip {}".format(self,self.pixel_strip))
+    #print("Neopixel rainbow {} pixel_strip {}".format(self,self.pixel_strip))
     if(num_pixels is None):
       num_pixels=self.pixel_strip.numPixels()
     for j in range(256*iterations):
@@ -89,7 +89,7 @@ class Neopixel:
       self.pixel_strip.show()
       time.sleep(wait_ms/1000.0)
 
-    print("Neopixel rainbow DONE")
+    #print("Neopixel rainbow DONE")
 
   #Draw rainbow that fades across all pixels at once.
   def rainbow_meter(self,num_pixels=None,blank_pixels=False,wait_ms=20):

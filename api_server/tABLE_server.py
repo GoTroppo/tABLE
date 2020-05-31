@@ -46,9 +46,9 @@ dataLock = threading.Lock()
 yourThread = None
 
 neopixel_controller = None
-mcp3008_controller = None
+#mcp3008_controller = None
 
-controllers = []
+mcp3008_controllers = []
 valid_display_devices = ['neopixel']
 
 app = Flask(__name__)
@@ -70,7 +70,6 @@ def do_rainbow_chase(gpio):
 
 @app.route('/neopixel/<int:gpio>/rainbow', methods=['GET'])
 def do_rainbow(gpio):
-    print("Running neopixel rainbow using {}".format(neopixel_controller))
     result=neopixel_controller.do_rainbow(gpio)
     return jsonify({'rainbow': result})
 
@@ -185,11 +184,11 @@ def interrupt():
       yourThread.cancel()
 
 def getController(type,controller_id=None):
-  global controllers
+  global mcp3008_controllers
   
   #print("###### getController {}".format(type))
   
-  for controller in controllers:
+  for controller in mcp3008_controllers:
     if(isinstance(controller, type)):
       if(type is Mcp3008Controller):
         if(controller_id is not None):
@@ -203,11 +202,17 @@ def getController(type,controller_id=None):
   return None
 
 def startSensorMonitors():
-  global controllers
+  global mcp3008_controllers
 
   # Create your thread
-  print("startSensorMonitors")
-  for controller in controllers:
+  print("%%%%%% startSensorMonitors %%%%%%")
+  #Start GPIO Ports
+  #Start Monitor for all GPIO ports
+  for gpio_port in GpioController.Instance().getAttachedInputPortsList():
+    if (gpio_port is not None):
+      #print("Starting GpioPort {} -- ID {}".format(gpio_port,gpio_port.gpio_id))
+      gpio_port.start()
+  for controller in mcp3008_controllers:
     #print("Controller Type: ", type(controller))
     if(isinstance(controller, Mcp3008Controller)):
       for analog_input in controller.getAttachedAnalogInputsList():
@@ -301,8 +306,8 @@ def validate_config():
           for mcp3008_id, mcp3008_values in pi_input_values['sensors']['mcp3008'].items():
             if('input_channels' in mcp3008_values):
               for mcp3008_channel_id, sensor_item in mcp3008_values['input_channels'].items():
-                print("Input Channel: '{}' - '{}'".format(mcp3008_channel_id,sensor_item))
-                print("sensor_item Type: {}".format(type(sensor_item)))
+                #print("Input Channel: '{}' - '{}'".format(mcp3008_channel_id,sensor_item))
+                #print("sensor_item Type: {}".format(type(sensor_item)))
                 if(type(sensor_item) is dict):  # If we have not defined 'reactors' then we only get a string
                   sensor_type = next(iter(sensor_item))
                   # Check valid sensor types
@@ -340,11 +345,24 @@ def validate_config():
               if(pi_input_values['sensor'] not in Sensor.valid_sensor_types["Digital"]):
                 print_config_error("Invalid Sensor type used for GPIO.\nFound '{}':'{}'".format(pi_input,pi_input_values['sensor']))
 
+def addSensorToGpioController(sensor_type,gpio_id):
+  '''
+  A Raspberry Pi GPIO port can only use a Digital interface
+  '''
+  
+  sensor_obj=None
 
+  if(sensor_type in Sensor.valid_sensor_types["Digital"]):
+
+    controller = GpioController.Instance()
+    if(controller is not None):
+      sensor_obj=DigitalSensor(sensor_type)
+      controller.addSensor(gpio_id, sensor_obj)
+
+  return sensor_obj
 
 def load_devices_from_config():
-  global controllers,neopixel_controller
-#  global valid_sensor_types
+  global mcp3008_controllers,neopixel_controller
   global valid_display_devices
 
   validate_config()
@@ -373,17 +391,15 @@ def load_devices_from_config():
 
             if(len(sensor_items) != 0):
               # We have items associated with MCP3008
-              # Let's create Mcp3008Controller and associated Sensors
-              #print("**** Creating Mcp3008Controller for ", pi_input)
-              
+              # Let's create Mcp3008Controller and associated Sensors              
               # We need to check if there is an existing controller for the SPI
               # We can only have one each of SPI0 and SPI1
               mcp3008_controller=getController(Mcp3008Controller,pi_input)
-              print("***** mcp3008_controller {}".format(mcp3008_controller))
+              #print("***** mcp3008_controller {}".format(mcp3008_controller))
               if(mcp3008_controller is None):
-                print("**** Creating Mcp3008Controller for {}".format(pi_input))
+                #print("**** Creating Mcp3008Controller for {}".format(pi_input))
                 mcp3008_controller=Mcp3008Controller(pi_input)
-                controllers.append(mcp3008_controller)
+                mcp3008_controllers.append(mcp3008_controller)
 
               for mcp3008_input_id,sensor_item in sensor_items.items():
                 sensor_type = None
@@ -397,7 +413,7 @@ def load_devices_from_config():
                 if(sensor_type in Sensor.valid_sensor_types["Analog"]):
                   sensor_obj = AnalogSensor(sensor_type)
                   mcp3008_controller=getController(Mcp3008Controller,pi_input)
-                  print("***** mcp3008_controller {} pi_input {}".format(mcp3008_controller,pi_input))
+                  #print("***** mcp3008_controller {} pi_input {}".format(mcp3008_controller,pi_input))
   
                   if(mcp3008_controller is not None and sensor_obj is not None):
                       mcp3008_controller.addSensor(mcp3008_input_id, sensor_obj)
@@ -406,40 +422,26 @@ def load_devices_from_config():
                 
                 # Add in reactors to Sensors
                 if(type(sensor_item) is dict):
-                  print("Attempting to add Reactors")
-                  print("Sensor Item: {}".format(sensor_item))
-                  print("Reactors: {}".format(sensor_item[sensor_type]['reactors']))
-
-                  '''
-                    for gpio_id, reactor in sensor_item[sensor_type]['reactors'].items():
-                      if(sensor_obj is not None):
-                        # Set as None until we have created instance associated with GPIO
-                        sensor_obj.addReactor(gpio_id,None)
-                  '''
+                  #print("Attempting to add Reactors")
+                  #print("Sensor Item: {}".format(sensor_item))
+                  #print("Reactors: {}".format(sensor_item[sensor_type]['reactors']))
                     
                   for reactor_class, reactor_items in sensor_item[sensor_type]['reactors'].items():
-                    #print("reactor_items {}".format(reactor_items))
-                    
                     for gpio_id, device in reactor_items.items():
                       if(sensor_obj is not None):
                         react_controller=ReactorController.Instance()
                         if(react_controller is None):
                           react_controller=ReactorController.Instance()
                         # Set as None until we have created instance associated with GPIO
-                        #sensor_obj.addReactor(gpio_id,None)
-                        #print("reactor_items {}".format(reactor_items))
-                        #print("***** mcp3008_controller {}".format(mcp3008_controller))
                         input=mcp3008_controller.getInput(mcp3008_input_id)
-                        print("Add in reactors to Sensors device: {} {}".format(device,gpio_id))
+                        #print("Add in reactors to Sensors device: {} {}".format(device,gpio_id))
                         if(gpio_id.find('gpio') != -1):
                           gpio_reactor_id=int(gpio_id[len('gpio'):])
                           if(gpio_reactor_id is not None):
-                            print("Adding Reactor: {} {} {}".format(input,reactor_class,gpio_reactor_id))
+                            #print("Adding Reactor: {} {} {}".format(input,reactor_class,gpio_reactor_id))
                             # Create Reactor instance                          
                             react_controller.addReactor(input,reactor_class,gpio_reactor_id)
                               
-                  #print("Sensor instances: {}".format(Sensor.instances))
-
         # Check for any GPIO pins with devices
         if(pi_input.find('gpio') != -1):
           # Check that there is only one device connected
@@ -447,16 +449,12 @@ def load_devices_from_config():
             display_type = pi_input_values['display_device']
 
             if(display_type =='neopixel'):
-              #print("***** Create Neopixel *****")
               gpio_pin=int(pi_input[len('gpio'):])
               if(Neopixel.getRPiPin(gpio_pin) is not None):
                 if(neopixel_controller is None):
                   neopixel_controller = NeopixelController.Instance()
                 neopixel_obj=neopixel_controller.addNeopixel(gpio_pin)
                 if (neopixel_obj is not None):
-                  #print("@@@@@ Adding in neopixel_obj {}".format(neopixel_obj))
-                  #print("@@@@@ Adding in neopixel_obj ReactorController.Instance().reactor_input_map {}".format(ReactorController.Instance().reactor_input_map))
-                  
                   reactor_input_map = ReactorController.Instance().reactor_input_map
                   for input_obj in reactor_input_map:
                     if(gpio_pin in reactor_input_map[input_obj].rpi_ports):
@@ -467,13 +465,6 @@ def load_devices_from_config():
                   for gpio in sensor.reactors:
                     if(sensor.reactors[gpio] is None):
                       sensor.reactors[gpio]=NeopixelController.neopixel_list[gpio_pin]
-
-                #ToDo: Take this out when  we manage triggers better
-                #for controller in controllers:
-                #  if(isinstance(controller, Mcp3008Controller)):
-                #    for sensor in controller.getSensorList():
-                #      if(isinstance(sensor, Xc3738Sensor)):
-                #        sensor.addNeopixelController(neopixel_controller)
 
           if('sensor' in pi_input_values):
             # Attaching in Sensor to GPIO Port 

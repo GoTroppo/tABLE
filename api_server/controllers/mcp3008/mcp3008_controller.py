@@ -40,7 +40,7 @@ class Mcp3008Controller:
   def addSensor(self,analog_input_channel,sensor:Sensor):
     input = MCP3008AnalogInput(self.spi,analog_input_channel,sensor)
     self.attached_sensors[input]=sensor
-    print("***** Mcp3008Controller addSensor SPI: {}, Input CH: {}, Sensor: {}".format(self.spi,analog_input_channel,id(input)))
+    #print("***** Mcp3008Controller addSensor SPI: {}, Input CH: {}, Sensor: {}".format(self.spi,analog_input_channel,id(input)))
 
   def getInput(self,analog_input_channel):
     for input,sensor in self.attached_sensors.items():

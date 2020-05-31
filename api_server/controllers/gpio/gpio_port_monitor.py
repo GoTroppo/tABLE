@@ -1,13 +1,13 @@
 import sys,errno
 from time import sleep
 import RPi.GPIO as GPIO
+from controllers.reactor.reactor_controller import ReactorController
 from controllers.port.port_monitor import PortMonitor
 
 class GpioPortMonitor(PortMonitor):
-
   DEBUG_MODE=False
   is_debug_message_printed = False
-  TIME_TO_SLEEP = sleep
+  TIME_TO_SLEEP = 0.05  #Default value
 
   stop_monitor=False
   gpio_port=None
@@ -46,6 +46,8 @@ class GpioPortMonitor(PortMonitor):
           elif(not self.is_debug_message_printed and not self.DEBUG_MODE):
             self.is_debug_message_printed = True
             print("****** Debug Off *****")
+
+          #print("Reading GpioPort {} = {}".format(self.gpio_port.gpio_id,reading))
 
           if(self.reactor_controller is not None):
             self.reactor_controller.trigger(self,reading)

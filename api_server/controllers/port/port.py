@@ -17,4 +17,5 @@ class Port():
     def __init__(self):
         #super().__init__(self)
         #print("***** Port Created {}".format(self.ident))
-        print("***** Port Created {}".format(self))
+        #print("***** Port Created {}".format(self))
+        pass

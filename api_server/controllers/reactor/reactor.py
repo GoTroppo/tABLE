@@ -1,5 +1,3 @@
-from controllers.gpio.gpio_controller import GpioController
-
 class Reactor():
     '''Base class for Reactors
     '''

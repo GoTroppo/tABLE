@@ -1,6 +1,3 @@
-#from controllers.port.port import Port 
-#import threading
-
 from controllers.reactor.reactor import Reactor
 from controllers.reactor.custom import * 
 
@@ -44,7 +41,4 @@ class ReactorController():
             else:
                 reactor=ReactorController.factory(reactor_class_str)
                 reactor.addRpiPort(reactor_port_id,None)
-                self.reactor_input_map[port_obj] = reactor
-
-        print("***** addReactor for port {} Reactor {} attached to {}".format(port_obj.name,reactor,reactor_port_id))
-            
+                self.reactor_input_map[port_obj] = reactor            

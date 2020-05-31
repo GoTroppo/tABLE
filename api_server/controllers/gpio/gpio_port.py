@@ -40,13 +40,13 @@ class GpioPort(Port):
     GPIO.setmode(GPIO.BCM)
     if(isinstance(attached_device, Sensor)):
         self.setFunction(GPIO.IN)
+        self.port_monitor=GpioPortMonitor(self,gpio_id)
     else:
         self.setFunction(GPIO.OUT)
-    self.port_monitor=GpioPortMonitor(self,gpio_id)
 
-    print("**** Created  GpioPort for GPIO {} ****".format(self.gpio_id))
-    print("****          GpioPort name {} ****".format(self.name))
-    print("****          GpioPort self {} ****".format(self))
+    #print("**** Created  GpioPort for GPIO {} ****".format(self.gpio_id))
+    #print("****          GpioPort name {} ****".format(self.name))
+    #print("****          GpioPort self {} ****".format(self))
 
   def setFunction(self,type):
         types=[GPIO.IN, GPIO.OUT, GPIO.SPI, GPIO.I2C, GPIO.HARD_PWM, GPIO.SERIAL]
@@ -66,45 +66,7 @@ class GpioPort(Port):
 
   def getGpioID(self):
         return self.gpio_id
-  
-  '''
-  # Read Input data
-  def readInput(self):
-    if(self.gpio_function == GPIO.IN):
-      if(self.gpio_id is not None):
-        return GPIO.input(self.gpio_id)
-    return None
-
-  def run(self):
-    if(self.gpio_function == GPIO.IN):
-      try:
-        print("**** Started GpioPort Monitor for {} ****".format(self.gpio_id))
-
-        while True:
-          if (self.stop_monitor):
-            break
-          is_monitor_running=True
-          reading = self.readInput()
-  
-          if(self.DEBUG_MODE):
-            self.is_debug_message_printed = False
-            print("Reading GpioPort {} = {}".format(self.gpio_id,reading))
-          elif(not self.is_debug_message_printed and not self.DEBUG_MODE):
-            self.is_debug_message_printed = True
-            print("****** Debug Off *****")
-
-          if(self.reactor_controller is not None):
-            self.reactor_controller.trigger(self,reading)
-
-          sleep(self.TIME_TO_SLEEP)
-
-      # When ^C is used put colours back to none
-      except KeyboardInterrupt:
-        is_monitor_running=False
-        print("No more Monitoring on GpioPort {} input !!!!!".format(self.gpio_id))
-      '''
       
-  #def run(self):
   def start(self):
     if(self.gpio_function == GPIO.IN):
       self.port_monitor.start()

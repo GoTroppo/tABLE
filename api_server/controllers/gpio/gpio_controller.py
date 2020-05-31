@@ -43,8 +43,8 @@ class GpioController:
 #            port = GpioPortDummy(gpio_id,sensor)
             port = GpioPort(gpio_id,sensor)
             self.attached_devices[port]=sensor
-            print(">>>>> GpioController addSensor gpio_id {} port {} sensor {}".format(gpio_id,port,sensor))
-            print(">>>>> GpioController addSensor Sensor added for ID {}".format(port.getGpioID()))
+            #print(">>>>> GpioController addSensor gpio_id {} port {} sensor {}".format(gpio_id,port,sensor))
+            #print(">>>>> GpioController addSensor Sensor added for ID {}".format(port.getGpioID()))
 
         except AssertionError as error:
             # Output expected AssertionErrors.
@@ -69,14 +69,11 @@ class GpioController:
     return sensor_list
 
   def getAttachedInputPortsList(self):
-    #print("%%%%% GpioController getAttachedInputPortsList:\n{}".format(self.attached_devices))
     port_list=[]
     for port in self.attached_devices :
-      #print("%%%%% GpioController getAttachedInputPortsList port {}".format(port))
       if(port.getFunction() == GPIO.IN):
         port_list.append(port)
 
-    print("%%%%% GpioController getAttachedInputPortsList port_list {}".format(port_list))
     return port_list
   
   def getAttachedDevice(self,gpio_id):
