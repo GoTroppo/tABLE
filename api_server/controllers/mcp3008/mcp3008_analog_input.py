@@ -20,8 +20,6 @@ class MCP3008AnalogInput(PortMonitor):
   #Attached Sensor
   attached_sensor=None
 
-  #port_monitor=None
-
   reactor_controller=ReactorController.Instance()
 
   DEBUG_MODE=False
@@ -38,8 +36,6 @@ class MCP3008AnalogInput(PortMonitor):
     self.channel_id=channel_id
     self.attached_sensor=sensor
     self.TIME_TO_SLEEP = sleep
-    #self.port_monitor=Mcp3008PortMonitor(self,spi_dev,channel_id,sleep=0.05)
-    #print("**** Created  MCP3008AnalogInput {} ****".format(self.ident))
     print("**** Created  MCP3008AnalogInput Name {} ****".format(self.name))
 
   def getChannel(self):
@@ -81,9 +77,3 @@ class MCP3008AnalogInput(PortMonitor):
     # When ^C is used put colours back to none
       is_monitor_running=False
       print("No more Monitoring on MCP3008 Analog input !!!!!")
-  
-  '''    
-  #def run(self):
-  def start(self):
-    self.port_monitor.start()
-  '''

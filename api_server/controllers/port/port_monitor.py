@@ -17,7 +17,6 @@ class PortMonitor(Thread):
         print("***** Port Monitor Created {}".format(self.ident))   
         
     def run(self):
-        #self.port_monitor.start()
         pass
 
 
