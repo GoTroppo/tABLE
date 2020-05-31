@@ -26,7 +26,6 @@ from controllers.neopixel.neopixel_controller import NeopixelController
 from controllers.mcp3008.mcp3008_controller import Mcp3008Controller
 from controllers.reactor.reactor_controller import ReactorController
 from models.devices.neopixel import Neopixel
-from models.sensors.xc3738_pressure_sensor import Xc3738Sensor
 from models.sensors.analog_sensor import AnalogSensor
 from models.sensors.digital_sensor import DigitalSensor
 from controllers.reactor.custom import *
@@ -50,7 +49,6 @@ neopixel_controller = None
 mcp3008_controller = None
 
 controllers = []
-valid_sensor_types = ["Xc3738Sensor","Xc4438Sensor"]
 valid_display_devices = ['neopixel']
 
 app = Flask(__name__)
@@ -268,7 +266,6 @@ def validate_reactors(config,reactors_list):
                           print_config_error("Invalid type used for Reactor for {}".format(reactors_list))
 
 def validate_config():
-  global valid_sensor_types
   global valid_display_devices
   try:
     assert DEVICE_CONFIG_FILE != "config/config_example.yaml", "Using example configuration file. Please copy this and customise the copy."
@@ -309,9 +306,8 @@ def validate_config():
                 if(type(sensor_item) is dict):  # If we have not defined 'reactors' then we only get a string
                   sensor_type = next(iter(sensor_item))
                   # Check valid sensor types
-                  if(sensor_type not in valid_sensor_types):
+                  if(sensor_type not in Sensor.valid_sensor_types["Analog"]):
                     print_config_error("Invalid Sensor Type - '{}'".format(sensor_type))
-                  #print("sensor_item {}".format(sensor_item))
 
                   # Check that reactors set for mcp3008 match those set up as gpio
                   if('reactors' in sensor_item[sensor_type]):
@@ -323,10 +319,11 @@ def validate_config():
         gpio_number=int(pi_input[len('gpio'):])
         if(gpio_number < 1 or gpio_number > 26):
           print_config_error("Invalid GPIO number\nFound '{}'".format(pi_input))
-        if('display_device' not in pi_input_values):
+        if('display_device' not in pi_input_values and 'sensor' not in pi_input_values):
           print_config_error("Invalid type used for GPIO.\nFound '{}':'{}'".format(pi_input,next(iter(pi_input_values))))
-        if(pi_input_values['display_device'] not in valid_display_devices):
-          print_config_error("Invalid display_device used for GPIO.\nFound '{}':'{}'".format(pi_input,pi_input_values['display_device']))
+        if('display_device' in pi_input_values):
+          if(pi_input_values['display_device'] not in valid_display_devices):
+            print_config_error("Invalid display_device used for GPIO.\nFound '{}':'{}'".format(pi_input,pi_input_values['display_device']))
         else:
           if('sensor' in pi_input_values):
             if(type(pi_input_values['sensor']) is dict):  # If we have not defined 'reactors' then we only get a string
@@ -334,7 +331,6 @@ def validate_config():
               # Check valid sensor types
               if(sensor_type not in Sensor.valid_sensor_types["Digital"]):
                 print_config_error("Invalid Sensor Type - '{}'".format(sensor_type))
-              #print("sensor_item {}".format(sensor_item))
 
               # Check that reactors set for gpio match those set up as gpio
               if('reactors' in pi_input_values['sensor'][sensor_type]):
@@ -348,7 +344,7 @@ def validate_config():
 
 def load_devices_from_config():
   global controllers,neopixel_controller
-  global valid_sensor_types
+#  global valid_sensor_types
   global valid_display_devices
 
   validate_config()
@@ -361,6 +357,7 @@ def load_devices_from_config():
     except ConstructorError as err:
       sys.exit(errno.EINTR)
 
+    mcp3008_controller=None
     if "raspberry_pi" in config:
       for pi_input, pi_input_values in config['raspberry_pi'].items() :
         # Check for SPI connected devices
@@ -378,13 +375,13 @@ def load_devices_from_config():
               # We have items associated with MCP3008
               # Let's create Mcp3008Controller and associated Sensors
               #print("**** Creating Mcp3008Controller for ", pi_input)
-              is_mcp_controller_exists=False
-              mcp3008_controller=None
-              for controller in controllers:
-                if(isinstance(controller, Mcp3008Controller)):
-                  if(controller.getSPI_ID == pi_input):
-                    is_mcp_controller_exists=True
-              if(not is_mcp_controller_exists):
+              
+              # We need to check if there is an existing controller for the SPI
+              # We can only have one each of SPI0 and SPI1
+              mcp3008_controller=getController(Mcp3008Controller,pi_input)
+              print("***** mcp3008_controller {}".format(mcp3008_controller))
+              if(mcp3008_controller is None):
+                print("**** Creating Mcp3008Controller for {}".format(pi_input))
                 mcp3008_controller=Mcp3008Controller(pi_input)
                 controllers.append(mcp3008_controller)
 
@@ -397,21 +394,22 @@ def load_devices_from_config():
                   sensor_type=sensor_item
 
                 sensor_obj=None
-                if(sensor_type in valid_sensor_types):
-                  if(sensor_type =='Xc3738Sensor'):
-                    sensor_obj = Xc3738Sensor()
-                  elif(sensor_type == 'Xc4438Sensor'):
-                    sensor_obj = Xc4438Sensor()
+                if(sensor_type in Sensor.valid_sensor_types["Analog"]):
+                  sensor_obj = AnalogSensor(sensor_type)
+                  mcp3008_controller=getController(Mcp3008Controller,pi_input)
+                  print("***** mcp3008_controller {} pi_input {}".format(mcp3008_controller,pi_input))
+  
                   if(mcp3008_controller is not None and sensor_obj is not None):
                       mcp3008_controller.addSensor(mcp3008_input_id, sensor_obj)
                 else:
-                  print_config_error("Invalid Sensor Type.\nFound '{}':'{}'".format(sensor_type))
+                  print_config_error("Invalid Sensor Type.\nFound '{}'".format(sensor_type))
                 
                 # Add in reactors to Sensors
                 if(type(sensor_item) is dict):
-                  #print("Attempting to add Reactors")
-                  #print("Sensor Item: {}".format(sensor_item))
-                  #print("Reactors: {}".format(sensor_item[sensor_type]['reactors']))
+                  print("Attempting to add Reactors")
+                  print("Sensor Item: {}".format(sensor_item))
+                  print("Reactors: {}".format(sensor_item[sensor_type]['reactors']))
+
                   '''
                     for gpio_id, reactor in sensor_item[sensor_type]['reactors'].items():
                       if(sensor_obj is not None):
@@ -427,7 +425,6 @@ def load_devices_from_config():
                         react_controller=ReactorController.Instance()
                         if(react_controller is None):
                           react_controller=ReactorController.Instance()
-                          #controllers.append(react_controller)
                         # Set as None until we have created instance associated with GPIO
                         #sensor_obj.addReactor(gpio_id,None)
                         #print("reactor_items {}".format(reactor_items))
@@ -457,8 +454,8 @@ def load_devices_from_config():
                   neopixel_controller = NeopixelController.Instance()
                 neopixel_obj=neopixel_controller.addNeopixel(gpio_pin)
                 if (neopixel_obj is not None):
-                  print("@@@@@ Adding in neopixel_obj {}".format(neopixel_obj))
-                  print("@@@@@ Adding in neopixel_obj ReactorController.Instance().reactor_input_map {}".format(ReactorController.Instance().reactor_input_map))
+                  #print("@@@@@ Adding in neopixel_obj {}".format(neopixel_obj))
+                  #print("@@@@@ Adding in neopixel_obj ReactorController.Instance().reactor_input_map {}".format(ReactorController.Instance().reactor_input_map))
                   
                   reactor_input_map = ReactorController.Instance().reactor_input_map
                   for input_obj in reactor_input_map:
