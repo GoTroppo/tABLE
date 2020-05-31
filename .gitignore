@@ -4,3 +4,5 @@ api_server/app.pid
 api_server/.env
 api_server/config/config.yaml
 api_server/config/config_tester.yaml
+.vscode/settings.json
+.env
