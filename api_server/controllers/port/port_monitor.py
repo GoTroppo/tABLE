@@ -15,6 +15,7 @@ class PortMonitor(Thread):
     def __init__(self,port:Port):
         super(PortMonitor,self).__init__()
         self.attached_port=port
+        self.setDaemon(True)
         #print("***** Port Monitor Created {}".format(self.ident))   
         
     def run(self):
