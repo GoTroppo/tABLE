@@ -24,18 +24,18 @@ class MCP3008AnalogInput(PortMonitor):
 
   DEBUG_MODE=False
   is_debug_message_printed = False
-  TIME_TO_SLEEP = sleep
+  TIME_TO_SLEEP = 0.05  # Default value
 
   stop_monitor=False
 
-  def __init__(self,spi_dev,channel_id,sensor:Sensor,sleep=0.05):
+  def __init__(self,spi_dev,channel_id,sensor:Sensor,default_sleep=0.05):
     super(MCP3008AnalogInput, self).__init__(self)
     self.name = "MCP3008AnalogInput_" + str(spi_dev) + "_" + str(channel_id)
     self.is_input=True  #This is always an input reading device
     self.spi_dev = spi_dev
     self.channel_id=channel_id
     self.attached_sensor=sensor
-    self.TIME_TO_SLEEP = sleep
+    self.TIME_TO_SLEEP = default_sleep
     #print("**** Created  MCP3008AnalogInput Name {} ****".format(self.name))
 
   def getChannel(self):
